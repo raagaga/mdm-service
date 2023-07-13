@@ -1,0 +1,12 @@
+#
+#server:
+#  port: 8091
+#  servlet:
+#    context-path: /user-service
+#
+#spring:
+#  application:
+#    name: UserService
+#  profiles:
+#    active: local
+#
