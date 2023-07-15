@@ -19,7 +19,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "MesUnitMaster", schema = "user_service",uniqueConstraints={@UniqueConstraint(columnNames={"unitName"})})
+@Table(name = "MesUnitMst", schema = "user_service",uniqueConstraints={@UniqueConstraint(columnNames={"unitName"})})
 public class UnitMaster extends BaseEntity implements Serializable {
 
     @Id

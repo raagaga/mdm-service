@@ -1,16 +1,21 @@
 package com.jsw.mes.mdm.service.impl;
 
-import com.jsw.mes.mdm.entity.AppMaster;
 import com.jsw.mes.mdm.entity.PlantMaster;
-import com.jsw.mes.mdm.entity.UnitMaster;
+import com.jsw.mes.mdm.exception.PlantMasterException;
+import com.jsw.mes.mdm.mapper.PlantMapper;
+import com.jsw.mes.mdm.model.PlantRequest;
+import com.jsw.mes.mdm.model.PlantResponse;
 import com.jsw.mes.mdm.repository.AppMasterRepository;
 import com.jsw.mes.mdm.repository.PlantMasterRepository;
 import com.jsw.mes.mdm.repository.UnitMasterRepository;
 import com.jsw.mes.mdm.service.PlantMasterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -19,54 +24,80 @@ public class PlantMasterServiceImpl implements PlantMasterService {
     @Autowired
     private AppMasterRepository appMasterRepository;
 
-    @Autowired
-    private PlantMasterRepository plantMasterRepository;
+    private final PlantMasterRepository plantMasterRepository;
 
     @Autowired
     private UnitMasterRepository unitMasterRepository;
 
+    private final PlantMapper plantMapper;
 
-    @Override
-    public String postPlantMst() {
-
-        PlantMaster plantMst=new PlantMaster();
-        plantMst.setPlantName("Vizag");
-        plantMst.setStatus("1");
-        plantMst.setCreatedBy("jsw_admin");
-        plantMst.setCreatedDate(Instant.now());
-        plantMst.setModifiedBy("jsw_admin");
-
-        AppMaster appMst=new AppMaster();
-         appMst.setAppDescription("apppppp desc");
-        appMst.setAppName("CRM");
-        appMst.setCreatedBy("jsw_admin");
-        appMst.setCreatedDate(Instant.now());
-        appMst.setModifiedBy("jsw_admin");
-        appMst.setModifiedDate(Instant.now());
-        appMst.setStatus("1");
-
-        UnitMaster unitMst= new UnitMaster();
-        unitMst.setCreatedBy("jsw_admin");
-        unitMst.setCreatedDate(Instant.now());
-        unitMst.setModifiedBy("jsw_admin");
-        unitMst.setModifiedDate(Instant.now());
-        unitMst.setStatus("1");
-        unitMst.setUnitDescription("unittttttt desccccccc");
-        unitMst.setUnitName("CRM 1");
-
-        plantMst.getUnitMstList().add(unitMst);
-        appMst.getUnitMstList().add(unitMst);
-
-        plantMasterRepository.save(plantMst);
-        appMasterRepository.save(appMst);
-        unitMasterRepository.save(unitMst);
-
-        return null;
+    public PlantMasterServiceImpl(PlantMasterRepository plantMasterRepository,
+                                  PlantMapper plantMapper
+    ) {
+        this.plantMasterRepository = plantMasterRepository;
+        this.plantMapper = plantMapper;
     }
 
     @Override
-    public PlantMaster getPlantMst() {
+    public PlantResponse addPlant(PlantRequest plantRequest) {
 
-        return plantMasterRepository.findAll().get(0);
+      if(plantMasterRepository.findAll().
+              stream().filter(plantMaster -> plantMaster.getPlantName().equals(plantRequest.getPlantName())).collect(Collectors.toList()).size() > 0 )
+      {
+          throw new PlantMasterException("Plant Already exists with this name",HttpStatus.NOT_FOUND);
+        }
+
+            return this.plantMapper.mapPlantResponse(
+                    this.plantMasterRepository.save(
+                            this.plantMapper.mapPlantMaster(plantRequest))) ;
+
+    }
+
+    @Override
+    public PlantResponse updatePlant(PlantRequest plantRequest) {
+
+        PlantMaster plantMaster=plantMasterRepository.findByPlantName(plantRequest.getPlantName());
+
+        if(plantMaster == null)
+            throw new PlantMasterException("Plant Credentials Not Found",HttpStatus.NOT_FOUND);
+        else
+           return this.plantMapper.mapPlantResponse(plantMaster);
+
+    }
+
+    @Override
+    public String deletePlant(int plantId) {
+
+        getPlant(plantId);
+
+        plantMasterRepository.deleteById(plantId);
+
+        return "Plant deleted successfully";
+
+    }
+
+    @Override
+    public PlantResponse getPlant(int plantId) {
+
+       return this.plantMapper.mapPlantResponse(plantMasterRepository.findById(plantId)
+                .orElseThrow( () -> new PlantMasterException("Plant Credentials Not Found with",HttpStatus.NOT_FOUND)));
+    }
+
+    @Override
+    public List<PlantResponse> getAllPlant() {
+
+        List<PlantResponse> plantResponses=new ArrayList<>();
+
+        List<PlantMaster> plantMasters= plantMasterRepository.findAll();
+
+        if(plantMasters.isEmpty()){
+            throw new PlantMasterException("No Records Found",HttpStatus.NOT_FOUND);
+        }else {
+            plantMasters.stream().forEach( plantMaster -> {
+                plantResponses.add(this.plantMapper.mapPlantResponse(plantMaster));
+            });
+        }
+
+        return plantResponses;
     }
 }

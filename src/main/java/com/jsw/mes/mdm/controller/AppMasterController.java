@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/app-master")
-@Slf4j
+@Log4j2
 public class AppMasterController {
 }

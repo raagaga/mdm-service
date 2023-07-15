@@ -11,4 +11,5 @@ public class MdmService {
 		SpringApplication.run(MdmService.class, args);
 	}
 
+
 }
