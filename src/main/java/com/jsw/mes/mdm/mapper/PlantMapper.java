@@ -8,21 +8,16 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.time.Instant;
+import java.util.List;
 
 @Mapper
 public interface PlantMapper {
 
-//    PlantMapper INSTANCE = Mappers.getMapper(PlantMapper.class);
-
-
-//    @Mapping(source = "plantRequest.createdBy", target = "createdBy")
-//    @Mapping(source = "plantRequest.createdDate", target = "createdDate")
-//    @Mapping(source = "plantRequest.modifiedBy", target = "modifiedBy")
-//    @Mapping(source = "plantRequest.modifiedDate", target = "modifiedDate")
-//    @Mapping(source = "plantRequest.isActive", target = "isActive")
     @Mapping(source = "plantRequest.plantName", target = "plantName")
-    public PlantMaster mapPlantMaster(PlantRequest plantRequest);
+    public PlantMaster mapToPlantMaster(PlantRequest plantRequest);
 
-    public PlantResponse mapPlantResponse(PlantMaster plantMaster);
+    public PlantResponse mapToPlantResponse(PlantMaster plantMaster);
+
+    public List<PlantResponse> mapToPlantResponseList(List<PlantMaster> plantMaster);
 
 }

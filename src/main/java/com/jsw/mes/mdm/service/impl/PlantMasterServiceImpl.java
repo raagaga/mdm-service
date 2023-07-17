@@ -9,25 +9,23 @@ import com.jsw.mes.mdm.repository.AppMasterRepository;
 import com.jsw.mes.mdm.repository.PlantMasterRepository;
 import com.jsw.mes.mdm.repository.UnitMasterRepository;
 import com.jsw.mes.mdm.service.PlantMasterService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
 @Service
+@Log4j2
 public class PlantMasterServiceImpl implements PlantMasterService {
 
-    @Autowired
-    private AppMasterRepository appMasterRepository;
-
-    private final PlantMasterRepository plantMasterRepository;
-
-    @Autowired
-    private UnitMasterRepository unitMasterRepository;
+    private final PlantMasterRepository plantMasterRepository ;
 
     private final PlantMapper plantMapper;
 
@@ -41,15 +39,25 @@ public class PlantMasterServiceImpl implements PlantMasterService {
     @Override
     public PlantResponse addPlant(PlantRequest plantRequest) {
 
-      if(plantMasterRepository.findAll().
-              stream().filter(plantMaster -> plantMaster.getPlantName().equals(plantRequest.getPlantName())).collect(Collectors.toList()).size() > 0 )
-      {
-          throw new PlantMasterException("Plant Already exists with this name",HttpStatus.NOT_FOUND);
+        if(plantMasterRepository.findAll().isEmpty()){
+           return addingPlant(plantRequest);
+        }else if(plantMasterRepository.findAll().
+              stream().filter(plantMaster -> plantMaster.getPlantName().equals(plantRequest.getPlantName())).count() > 0 ){
+          log.error("Plant Already exists with that name");
+          throw new PlantMasterException("Plant Already exists with that name",HttpStatus.NOT_FOUND);
         }
 
-            return this.plantMapper.mapPlantResponse(
-                    this.plantMasterRepository.save(
-                            this.plantMapper.mapPlantMaster(plantRequest))) ;
+            return addingPlant(plantRequest);
+
+    }
+
+    public PlantResponse addingPlant(PlantRequest plantRequest) {
+
+        log.info("Plant Details are added");
+
+        return this.plantMapper.mapToPlantResponse(
+                this.plantMasterRepository.save(
+                        this.plantMapper.mapToPlantMaster(plantRequest))) ;
 
     }
 
@@ -58,10 +66,14 @@ public class PlantMasterServiceImpl implements PlantMasterService {
 
         PlantMaster plantMaster=plantMasterRepository.findByPlantName(plantRequest.getPlantName());
 
-        if(plantMaster == null)
-            throw new PlantMasterException("Plant Credentials Not Found",HttpStatus.NOT_FOUND);
-        else
-           return this.plantMapper.mapPlantResponse(plantMaster);
+        if(plantMaster == null) {
+            log.error("Plant Already exists with that name");
+            throw new PlantMasterException("Plant Credentials Not Found", HttpStatus.NOT_FOUND);
+        } else{
+            log.info("Plant credentials are updated");
+            return this.plantMapper.mapToPlantResponse(plantMaster);
+        }
+
 
     }
 
@@ -72,6 +84,8 @@ public class PlantMasterServiceImpl implements PlantMasterService {
 
         plantMasterRepository.deleteById(plantId);
 
+        log.info("Plant deleted successfully");
+
         return "Plant deleted successfully";
 
     }
@@ -79,25 +93,22 @@ public class PlantMasterServiceImpl implements PlantMasterService {
     @Override
     public PlantResponse getPlant(int plantId) {
 
-       return this.plantMapper.mapPlantResponse(plantMasterRepository.findById(plantId)
+       return this.plantMapper.mapToPlantResponse(plantMasterRepository.findById(plantId)
                 .orElseThrow( () -> new PlantMasterException("Plant Credentials Not Found with",HttpStatus.NOT_FOUND)));
     }
 
     @Override
     public List<PlantResponse> getAllPlant() {
 
-        List<PlantResponse> plantResponses=new ArrayList<>();
-
         List<PlantMaster> plantMasters= plantMasterRepository.findAll();
 
         if(plantMasters.isEmpty()){
+            log.error("No Records Found");
             throw new PlantMasterException("No Records Found",HttpStatus.NOT_FOUND);
         }else {
-            plantMasters.stream().forEach( plantMaster -> {
-                plantResponses.add(this.plantMapper.mapPlantResponse(plantMaster));
-            });
+            log.info("Records Found");
+          return  this.plantMapper.mapToPlantResponseList(plantMasters);
         }
 
-        return plantResponses;
     }
 }
