@@ -13,7 +13,13 @@ import java.util.List;
 @Mapper
 public interface PlantMapper {
 
-    @Mapping(source = "plantRequest.plantName", target = "plantName")
+
+//    @Mapping(source = "plantRequest.crea", target = "plantName")
+//    @Mapping(source = "plantRequest.plantName", target = "plantName")
+//    @Mapping(source = "plantRequest.plantName", target = "plantName")
+//    @Mapping(source = "plantRequest.plantName", target = "plantName")
+//    @Mapping(source = "plantRequest.plantName", target = "plantName")
+//    @Mapping(source = "plantRequest.plantName", target = "plantName")
     public PlantMaster mapToPlantMaster(PlantRequest plantRequest);
 
     public PlantResponse mapToPlantResponse(PlantMaster plantMaster);

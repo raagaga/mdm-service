@@ -14,21 +14,21 @@ import java.time.Instant;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+//@Builder
 //@SuperBuilder
-public class PlantRequest {
+public class PlantRequest extends BaseEntity{
 
     private String plantName;
 
-    private String isActive;
-
-    private String createdBy;
-
-    private Instant createdDate;
-
-    private String modifiedBy;
-
-    private Instant modifiedDate;
+//    private String isActive;
+//
+//    private String createdBy;
+//
+//    private Instant createdDate;
+//
+//    private String modifiedBy;
+//
+//    private Instant modifiedDate;
 
 
 }

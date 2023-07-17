@@ -14,7 +14,7 @@ import java.time.Instant;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+//@Builder
 //@SuperBuilder
 public class PlantResponse  extends BaseEntity {
 
@@ -22,14 +22,14 @@ public class PlantResponse  extends BaseEntity {
 
     private String plantName;
 
-    private String isActive;
-
-    private String createdBy;
-
-    private Instant createdDate;
-
-    private String modifiedBy;
-
-    private Instant modifiedDate;
+//    private String isActive;
+//
+//    private String createdBy;
+//
+//    private Instant createdDate;
+//
+//    private String modifiedBy;
+//
+//    private Instant modifiedDate;
 
 }
