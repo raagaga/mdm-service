@@ -25,7 +25,7 @@ public class AppMaster extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "appId")
     @Range(min=0,max=999999999)
-    private int appId;
+    private long appId;
 
     @Column(name = "appName")
     @Length(min=0,max = 15)

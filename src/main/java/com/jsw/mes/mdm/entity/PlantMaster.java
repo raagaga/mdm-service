@@ -20,7 +20,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-//@Builder
+@Builder
 //@SuperBuilder
 @Table(name = "MesPlantMst", schema = "user_service",uniqueConstraints={@UniqueConstraint(columnNames={"plantName"})})
 public class PlantMaster extends BaseEntity {
