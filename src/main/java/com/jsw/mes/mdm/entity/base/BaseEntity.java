@@ -22,15 +22,15 @@ public abstract class BaseEntity implements Serializable {
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private Instant createdAt;
+    private Instant createdDt = Instant.now();;
 
     @CreatedBy
     @Column(nullable = false, updatable = false)
-    private Long createdDt = 0L;
+    private Long createdBy = 0L;
 
     @LastModifiedDate
     @Column(nullable = false)
-    private Instant modifiedDt;
+    private Instant modifiedDt= Instant.now();;
 
     @LastModifiedBy
     @Column(nullable = false)
