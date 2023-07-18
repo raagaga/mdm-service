@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
 @SpringBootApplication
-public class MdmService {
+public class 	MdmService {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MdmService.class, args);

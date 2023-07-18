@@ -1,36 +1,39 @@
 package com.jsw.mes.mdm.entity.base;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
-import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.SuperBuilder;
-import org.hibernate.validator.constraints.Length;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
 import java.time.Instant;
 
 @Data
 @MappedSuperclass
-//@Builder
+@EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity implements Serializable {
 
-    @Column(name = "isActive")
-    @Length(min=0,max = 1)
-    private String isActive;
+    private static final long serialVersionUID = 4286140203575460473L;
 
-    @Column(name = "createdBy")
-    @Length(min=0,max = 30)
-    private String createdBy;
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
 
-    @Column(name = "createdDt")
-    private Instant createdDate;
+    @CreatedBy
+    @Column(nullable = false, updatable = false)
+    private Long createdDt = 0L;
 
-    @Column(name = "modifiedBy")
-    @Length(min=0,max = 30)
-    private String modifiedBy;
+    @LastModifiedDate
+    @Column(nullable = false)
+    private Instant modifiedDt;
 
-    @Column(name = "modifiedDt")
-    private Instant modifiedDate;
+    @LastModifiedBy
+    @Column(nullable = false)
+    private Long modifiedBy = 0L;
 
 }

@@ -28,12 +28,13 @@ public class PlantMaster extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "plantId")
-    @Range(min=0,max=99999)
     private int plantId;
 
     @Column(name = "plantName")
-    @Length(min=0,max = 50)
     private String plantName;
+
+    @Column(name = "isActive")
+    private String isActive;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "plantId", referencedColumnName = "plantId")

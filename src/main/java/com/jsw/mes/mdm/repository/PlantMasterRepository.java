@@ -2,11 +2,22 @@ package com.jsw.mes.mdm.repository;
 
 import com.jsw.mes.mdm.entity.PlantMaster;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
-public interface PlantMasterRepository extends JpaRepository<PlantMaster,Integer> {
+public interface PlantMasterRepository extends JpaRepository<PlantMaster, Integer> {
 
-   public PlantMaster findByPlantName(String plantName);
 
+  Optional<PlantMaster> findByPlantNameAndIsActive(String plantName, String isActive);
+
+  List<PlantMaster> findAllByIsActive(String isActive);
+
+  PlantMaster findByPlantIdAndIsActive(int plantId, String isActive);
+
+  @Query(value = "update mes_plant_mst set isActive='Y' where plantId=:plantId",nativeQuery = true)
+  PlantMaster updatePlant(int plantId);
 }

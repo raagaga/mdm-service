@@ -1,4 +1,4 @@
-package com.jsw.mes.mdm.model;
+package com.jsw.mes.mdm.model.request;
 
 import com.jsw.mes.mdm.entity.base.BaseEntity;
 import jakarta.persistence.Column;
@@ -15,20 +15,9 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-//@SuperBuilder
-public class PlantRequest extends BaseEntity{
+public class PlantRequest  {
+  private int plantId;
+  private String plantName;
 
-    private String plantName;
-
-//    private String isActive;
-//
-//    private String createdBy;
-//
-//    private Instant createdDate;
-//
-//    private String modifiedBy;
-//
-//    private Instant modifiedDate;
-
-
+  private String isActive;
 }
