@@ -14,6 +14,7 @@ import com.jsw.mes.mdm.repository.AppMasterRepository;
 import com.jsw.mes.mdm.repository.ProcessMasterRepository;
 import com.jsw.mes.mdm.repository.UnitMasterRepository;
 import com.jsw.mes.mdm.service.ProcessMasterService;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Log4j2
 public class ProcessMasterServiceImpl implements ProcessMasterService {
 
     private final AppMasterRepository appMasterRepository;
@@ -50,16 +52,16 @@ public class ProcessMasterServiceImpl implements ProcessMasterService {
         Optional<ProcessMaster> processMasterOptional =processMasterRepository.findByProcessNameAndIsActive(processMasterRequest.getProcessName(),"Y");
 
         if(!processMasterOptional.isEmpty()){
+            log.error("Process Already exists with the given processName");
             throw new ProcessMasterException("Process Already exists with the given processName", HttpStatus.NOT_FOUND);
         }
 
-        AppMaster appMaster =appMasterRepository.findByAppIdAndIsActive(processMasterRequest.getAppId(),"Y")
-                .orElseThrow( () -> new ProcessMasterException("AppId NotFound", HttpStatus.NOT_FOUND));
-
-        UnitMaster unitMaster=unitMasterRepository.findByUnitIdAndIsActive(processMasterRequest.getUnitId(),"Y")
-                .orElseThrow( () -> new ProcessMasterException("UnitIdFound", HttpStatus.NOT_FOUND));
-
         ProcessMaster processMaster1=processMasterMapper.toEntity(processMasterRequest);
+
+        AppMaster appMaster = getAppMaster(processMasterRequest.getProcessId());
+
+        UnitMaster unitMaster=getUnitMaster(processMasterRequest.getProcessId());
+
         processMasterRepository.save(processMaster1);
 
         unitMaster.getProcessMstList().add(processMaster1);
@@ -72,6 +74,15 @@ public class ProcessMasterServiceImpl implements ProcessMasterService {
 
     }
 
+    public AppMaster getAppMaster(int id){
+       return appMasterRepository.findByAppIdAndIsActive(id,"Y")
+                .orElseThrow( () -> new ProcessMasterException("AppId NotFound", HttpStatus.NOT_FOUND));
+    }
+
+    public UnitMaster getUnitMaster(int id){
+       return unitMasterRepository.findByUnitIdAndIsActive(id,"Y")
+                .orElseThrow( () -> new ProcessMasterException("UnitIdFound", HttpStatus.NOT_FOUND));
+    }
 
     @Override
     public ProcessMasterResponse updateProcess(ProcessMasterRequest processMasterRequest) {
@@ -79,26 +90,20 @@ public class ProcessMasterServiceImpl implements ProcessMasterService {
        ProcessMaster processMaster =processMasterRepository.findById(processMasterRequest.getProcessId())
                .orElseThrow(()-> new ProcessMasterException("Process does not exists with the given processName", HttpStatus.NOT_FOUND));
 
-       AppMaster appMaster =appMasterRepository.findByAppIdAndIsActive(processMasterRequest.getAppId(),"Y")
-                .orElseThrow( () -> new ProcessMasterException("AppId NotFound", HttpStatus.NOT_FOUND));
+       AppMaster appMaster = getAppMaster(processMasterRequest.getProcessId());
 
-        UnitMaster unitMaster=unitMasterRepository.findByUnitIdAndIsActive(processMasterRequest.getUnitId(),"Y")
-                .orElseThrow( () -> new ProcessMasterException("UnitIdFound", HttpStatus.NOT_FOUND));
+       UnitMaster unitMaster=getUnitMaster(processMasterRequest.getProcessId());
 
         ProcessMaster mapperProcessMaster=processMasterMapper.toEntity(processMasterRequest);
         mapperProcessMaster.setProcessId(processMasterRequest.getProcessId());
         processMasterRepository.save(mapperProcessMaster);
 
-        List unitMasterList=unitMaster.getProcessMstList().stream().filter(
-                process -> process.getProcessId() == processMasterRequest.getProcessId()).collect(Collectors.toList());
-        if(unitMasterList.isEmpty()){
+        if (!unitMaster.getProcessMstList().stream().anyMatch(process -> process.getProcessId() == processMasterRequest.getProcessId())) {
             unitMaster.getProcessMstList().add(mapperProcessMaster);
             unitMasterRepository.save(unitMaster);
         }
 
-        List appMasterLIst=appMaster.getProcessMstList().stream().filter(
-                process -> process.getProcessId() == processMasterRequest.getProcessId()).collect(Collectors.toList());
-        if(appMasterLIst.isEmpty()){
+        if (!appMaster.getProcessMstList().stream().anyMatch(process -> process.getProcessId() == processMasterRequest.getProcessId())) {
             appMaster.getProcessMstList().add(processMaster);
             appMasterRepository.save(appMaster);
         }
@@ -123,25 +128,15 @@ public class ProcessMasterServiceImpl implements ProcessMasterService {
         ProcessMaster processMaster =processMasterRepository.findById(processId)
                 .orElseThrow(()-> new ProcessMasterException("Process does not exists with the given processName", HttpStatus.NOT_FOUND));
 
-      List<UnitMaster> unitMasters= unitMasterRepository.findAll();
+        List<UnitMaster> unitMasterList = unitMasterRepository.findAll()
+                .stream()
+                .filter(unitMaster -> unitMaster.getProcessMstList().stream().anyMatch(process -> process.getProcessId() == processId))
+                .collect(Collectors.toList());
 
-      List<UnitMaster> unitMasterList=new ArrayList<>();
-
-      for(UnitMaster unitMaster:unitMasters){
-         if( unitMaster.getProcessMstList().stream().filter(process -> process.getProcessId() == processId).count() >0 ){
-             unitMasterList.add(unitMaster);
-         }
-      }
-
-        List<AppMaster> appMasters= appMasterRepository.findAll();
-
-        List<AppMaster> appMasterList=new ArrayList<>();
-
-        for(AppMaster appMaster:appMasters){
-            if( appMaster.getProcessMstList().stream().filter(process -> process.getProcessId() == processId).count() >0 ){
-                appMasterList.add(appMaster);
-            }
-        }
+        List<AppMaster> appMasterList = appMasterRepository.findAll()
+                .stream()
+                .filter(appMaster -> appMaster.getProcessMstList().stream().anyMatch(process -> process.getProcessId() == processId))
+                .collect(Collectors.toList());
 
         return    processMasterMapper.toResponse(processMaster,
                 appMasterList.get(0).getAppId(),
@@ -152,18 +147,14 @@ public class ProcessMasterServiceImpl implements ProcessMasterService {
     @Override
     public List<ProcessMasterResponse> getAllProcess() {
 
-        List<ProcessMaster> processMasters=processMasterRepository.findAll();
-        if(processMasters.isEmpty()){
-            throw new ProcessMasterException("No records Found",HttpStatus.NOT_FOUND);
+        List<ProcessMaster> processMasters = processMasterRepository.findAll();
+
+        if (processMasters.isEmpty()) {
+            throw new ProcessMasterException("No records Found", HttpStatus.NOT_FOUND);
         }
 
-        List<ProcessMasterResponse> processMasterResponses=new ArrayList<>();
-
-        processMasters.stream().forEach( processMaster -> {
-            processMasterResponses.add(getProcess(processMaster.getProcessId()));
-        });
-
-        return processMasterResponses;
+        return processMasters.stream()
+                .map(processMaster -> getProcess(processMaster.getProcessId())).collect(Collectors.toList());
     }
 
 
