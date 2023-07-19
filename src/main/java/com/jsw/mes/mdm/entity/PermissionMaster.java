@@ -28,6 +28,8 @@ public class PermissionMaster extends BaseEntity implements Serializable {
     @Length(min=0,max = 50)
     private String permissionName;
 
+    @Column(name = "isActive")
+    private String isActive;
 
 
 }

@@ -22,4 +22,10 @@ public class PlantMapper
         .isActive(plantMaster.getIsActive())
         .build();
   }
+
+  @Override
+  public PlantResponse toResponse(PlantMaster plantMaster, long primaryId, long secondaryId) {
+    return null;
+  }
+
 }

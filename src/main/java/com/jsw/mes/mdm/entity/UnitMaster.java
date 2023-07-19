@@ -4,6 +4,7 @@ import com.jsw.mes.mdm.entity.base.BaseEntity;
 import jakarta.persistence.*;
 //import javax.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
@@ -19,6 +20,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "MesUnitMst", schema = "user_service",uniqueConstraints={@UniqueConstraint(columnNames={"unitName"})})
 public class UnitMaster extends BaseEntity implements Serializable {
 
@@ -36,12 +38,15 @@ public class UnitMaster extends BaseEntity implements Serializable {
     @Length(min=0,max = 100)
     private String unitDescription;
 
+    @Column(name = "isActive")
+    private String isActive;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "unitId", referencedColumnName = "unitId")
     private List<ProcessMaster> processMstList = new ArrayList<ProcessMaster>();
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "unitId", referencedColumnName = "unitId",unique = true)
+    @JoinColumn(name = "unitId", referencedColumnName = "unitId")
     private List<WorkCenterMaster> workCenterMstList = new ArrayList<WorkCenterMaster>();
 
 }

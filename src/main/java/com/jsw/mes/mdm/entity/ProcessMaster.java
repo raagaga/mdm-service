@@ -3,6 +3,7 @@ package com.jsw.mes.mdm.entity;
 import com.jsw.mes.mdm.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
@@ -18,6 +19,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "MesProcessMst", schema = "user_service",uniqueConstraints={@UniqueConstraint(columnNames={"processName"})})
 public class ProcessMaster extends BaseEntity implements Serializable {
 
@@ -34,6 +36,9 @@ public class ProcessMaster extends BaseEntity implements Serializable {
     @Column(name = "processDesc")
     @Length(min=0,max = 100)
     private String processDescription;
+
+    @Column(name = "isActive")
+    private String isActive;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "processId", referencedColumnName = "processId")

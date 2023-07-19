@@ -35,7 +35,7 @@ public class PlantMasterServiceImpl implements PlantMasterService {
     Optional<PlantMaster> plantMaster =
         plantMasterRepository.findByPlantNameAndIsActive(plantRequest.getPlantName(), "Y");
     if (!plantMaster.isEmpty()) {
-      throw new BadRequestException("please provide valid platName");
+      throw new BadRequestException("please provide valid plantName");
     }
     plantRequest.setIsActive("Y");
     return !ObjectUtils.isEmpty(plantRequest)
@@ -55,7 +55,9 @@ public class PlantMasterServiceImpl implements PlantMasterService {
       throw new BadRequestException("Plant info not available");
     }
     return plantMasterRepository.save(
+
         PlantMaster.builder()
+                .plantId(  plantMaster.get().getPlantId())
             .plantName(plantRequest.getPlantName())
             .isActive(plantRequest.getIsActive())
             .build());

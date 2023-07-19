@@ -18,6 +18,6 @@ public interface PlantMasterRepository extends JpaRepository<PlantMaster, Intege
 
   PlantMaster findByPlantIdAndIsActive(int plantId, String isActive);
 
-  @Query(value = "update mes_plant_mst set isActive='Y' where plantId=:plantId",nativeQuery = true)
+  @Query(value = "update mes_plant_mst set isActive='N' where plantId=:plantId",nativeQuery = true)
   PlantMaster updatePlant(int plantId);
 }

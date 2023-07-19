@@ -21,7 +21,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-//@SuperBuilder
 @Table(name = "MesPlantMst", schema = "user_service",uniqueConstraints={@UniqueConstraint(columnNames={"plantName"})})
 public class PlantMaster extends BaseEntity {
 

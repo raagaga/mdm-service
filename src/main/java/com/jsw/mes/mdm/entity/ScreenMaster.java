@@ -41,4 +41,7 @@ public class ScreenMaster extends BaseEntity implements Serializable {
     @Length(min=0,max = 50)
     private String screenType;
 
+    @Column(name = "isActive")
+    private String isActive;
+
 }

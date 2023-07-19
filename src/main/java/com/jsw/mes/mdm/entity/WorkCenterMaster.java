@@ -32,4 +32,7 @@ public class WorkCenterMaster extends BaseEntity implements Serializable {
     @Length(min=0,max = 100)
     private String workCenterDescription;
 
+    @Column(name = "isActive")
+    private String isActive;
+
 }
