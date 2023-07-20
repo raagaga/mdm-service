@@ -1,11 +1,9 @@
 package com.jsw.mes.mdm.controller;
 
-import com.jsw.mes.mdm.model.request.PlantRequest;
-import com.jsw.mes.mdm.model.request.ProcessMasterRequest;
-import com.jsw.mes.mdm.model.response.PlantResponse;
-import com.jsw.mes.mdm.model.response.ProcessMasterResponse;
+import com.jsw.mes.mdm.model.request.ProcessRequest;
+import com.jsw.mes.mdm.model.response.ProcessResponse;
 import com.jsw.mes.mdm.model.response.Response;
-import com.jsw.mes.mdm.service.ProcessMasterService;
+import com.jsw.mes.mdm.service.ProcessService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,12 +18,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/process")
 @Log4j2
-public class ProcessMasterController {
+public class ProcessController {
 
-    private final ProcessMasterService processMasterService;
+    private final ProcessService processService;
 
-    public ProcessMasterController(ProcessMasterService processMasterService) {
-        this.processMasterService = processMasterService;
+    public ProcessController(ProcessService processService) {
+        this.processService = processService;
     }
 
     @PostMapping
@@ -36,10 +34,10 @@ public class ProcessMasterController {
                     @ApiResponse(responseCode = "404", description = "Invalid AppId", content = @Content),
                     @ApiResponse(responseCode = "404", description = "Invalid UnitId", content = @Content)
             })
-    public ResponseEntity<Response<ProcessMasterResponse>> addProcess(@RequestBody ProcessMasterRequest processMasterRequest) {
+    public ResponseEntity<Response<ProcessResponse>> addProcess(@RequestBody ProcessRequest processRequest) {
         log.info("Adding Process is started.......");
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(Response.of(processMasterService.addProcess(processMasterRequest)));
+                .body(Response.of(processService.addProcess(processRequest)));
     }
 
     @PutMapping
@@ -50,10 +48,10 @@ public class ProcessMasterController {
                     @ApiResponse(responseCode = "404", description = "Invalid AppId", content = @Content),
                     @ApiResponse(responseCode = "404", description = "Invalid UnitId", content = @Content)
             })
-    public ResponseEntity<Response<ProcessMasterResponse>> updateProcess(@RequestBody ProcessMasterRequest processMasterRequest) {
+    public ResponseEntity<Response<ProcessResponse>> updateProcess(@RequestBody ProcessRequest processRequest) {
         log.info("update Process is started.......");
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(Response.of(processMasterService.updateProcess(processMasterRequest)));
+                .body(Response.of(processService.updateProcess(processRequest)));
     }
 
     @DeleteMapping("/{processId}")
@@ -66,11 +64,11 @@ public class ProcessMasterController {
                             description = "Invalid Process",
                             content = @Content),
             })
-    public ResponseEntity<Response<ProcessMasterResponse>> deleteProcess(@RequestParam("processId") int processId) {
+    public ResponseEntity<Response<ProcessResponse>> deleteProcess(@RequestParam("processId") int processId) {
 
         log.info("Delete Process is started.......");
         return ResponseEntity.status(HttpStatus.OK)
-                .body(Response.of(processMasterService.deleteProcess(processId)));
+                .body(Response.of(processService.deleteProcess(processId)));
     }
 
     @GetMapping("/{processId}")
@@ -83,10 +81,10 @@ public class ProcessMasterController {
                             description = "Invalid process id provided",
                             content = @Content),
             })
-    public ResponseEntity<Response<ProcessMasterResponse>> getProcess(@RequestParam("plantId") int processId) {
+    public ResponseEntity<Response<ProcessResponse>> getProcess(@RequestParam("plantId") int processId) {
         log.info("Get Process is started.......");
         return ResponseEntity.status(HttpStatus.OK)
-                .body(Response.of(processMasterService.getProcess(processId)));
+                .body(Response.of(processService.getProcess(processId)));
     }
 
     @GetMapping("")
@@ -99,10 +97,10 @@ public class ProcessMasterController {
                             description = "No records found",
                             content = @Content),
             })
-    public ResponseEntity<Response<List<ProcessMasterResponse>>> getAllProcess(@RequestParam("appId")long appId,@RequestParam("unitId")int unitId) {
+    public ResponseEntity<Response<List<ProcessResponse>>> getAllProcess(@RequestParam("appId")long appId, @RequestParam("unitId")int unitId) {
         log.info("Get All Process is started.......");
         return ResponseEntity.status(HttpStatus.OK)
-                .body(Response.of(processMasterService.getAllProcess(appId,unitId)));
+                .body(Response.of(processService.getAllProcess(appId,unitId)));
     }
 
 

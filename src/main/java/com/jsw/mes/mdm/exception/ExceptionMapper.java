@@ -1,7 +1,6 @@
 package com.jsw.mes.mdm.exception;
 
 
-import lombok.extern.log4j.Log4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -28,8 +27,8 @@ public class ExceptionMapper extends ResponseEntityExceptionHandler  {
 
     }
 
-    @ExceptionHandler(ProcessMasterException.class)
-    public ResponseEntity<Object> emp(ProcessMasterException exception) {
+    @ExceptionHandler(ProcessException.class)
+    public ResponseEntity<Object> emp(ProcessException exception) {
         return customErrorResponse(new ApiError(exception.getMessage(),exception.getHttpStatus(), Instant.now()));
 
     }

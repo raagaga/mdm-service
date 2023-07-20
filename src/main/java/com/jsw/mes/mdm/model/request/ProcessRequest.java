@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProcessMasterRequest {
+public class ProcessRequest {
 
     private int appId;
 

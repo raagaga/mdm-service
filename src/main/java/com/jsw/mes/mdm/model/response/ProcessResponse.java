@@ -1,14 +1,23 @@
 package com.jsw.mes.mdm.model.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.Instant;
 
-public class QueryResponse {
-
-    private int processId;
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class ProcessResponse {
 
     private long appId;
 
     private int unitId;
+
+    private int processId;
 
     private String processName;
 
@@ -23,4 +32,6 @@ public class QueryResponse {
     private Instant modifiedDt;;
 
     private Long modifiedBy;
+
+
 }

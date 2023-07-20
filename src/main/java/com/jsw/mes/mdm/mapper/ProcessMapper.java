@@ -1,20 +1,17 @@
 package com.jsw.mes.mdm.mapper;
 
-import com.jsw.mes.mdm.entity.PlantMaster;
 import com.jsw.mes.mdm.entity.ProcessMaster;
-import com.jsw.mes.mdm.model.request.PlantRequest;
-import com.jsw.mes.mdm.model.request.ProcessMasterRequest;
-import com.jsw.mes.mdm.model.response.PlantResponse;
-import com.jsw.mes.mdm.model.response.ProcessMasterResponse;
+import com.jsw.mes.mdm.model.request.ProcessRequest;
+import com.jsw.mes.mdm.model.response.ProcessResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
 @Component
 @Log4j2
-public class ProcessMasterMapper
-        implements EntityMapper<ProcessMasterRequest, ProcessMaster>, ResponseMapper<ProcessMaster, ProcessMasterResponse> {
+public class ProcessMapper
+        implements EntityMapper<ProcessRequest, ProcessMaster>, ResponseMapper<ProcessMaster, ProcessResponse> {
     @Override
-    public ProcessMaster toEntity(ProcessMasterRequest source) {
+    public ProcessMaster toEntity(ProcessRequest source) {
 
         return ProcessMaster.builder()
                 .processDescription(source.getProcessDescription())
@@ -24,11 +21,11 @@ public class ProcessMasterMapper
     }
 
     @Override
-    public ProcessMasterResponse toResponse(ProcessMaster processMaster) {
+    public ProcessResponse toResponse(ProcessMaster processMaster) {
 
-        log.info("ProcessMaster is mapped to ProcessMasterResponse");
+        log.info("ProcessMaster is mapped to ProcessResponse");
 
-        return ProcessMasterResponse.builder()
+        return ProcessResponse.builder()
                 .processId(processMaster.getProcessId())
                 .processDescription(processMaster.getProcessDescription())
                 .processName(processMaster.getProcessName())
@@ -42,11 +39,11 @@ public class ProcessMasterMapper
     }
 
     @Override
-    public ProcessMasterResponse toResponse(ProcessMaster processMaster, long primaryId, long secondaryId) {
+    public ProcessResponse toResponse(ProcessMaster processMaster, long primaryId, long secondaryId) {
 
-        log.info("ProcessMaster is mapped to ProcessMasterResponse along with appId & unitId");
+        log.info("ProcessMaster is mapped to ProcessResponse along with appId & unitId");
 
-        return ProcessMasterResponse.builder()
+        return ProcessResponse.builder()
                 .appId(primaryId)
                 .unitId((int) secondaryId)
                 .processId(processMaster.getProcessId())
