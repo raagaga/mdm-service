@@ -24,19 +24,21 @@ public class ExceptionMapper extends ResponseEntityExceptionHandler  {
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<Object> badRequestException(BadRequestException exp) {
         return customErrorResponse(new ApiError(exp.getMessage(), HttpStatus.BAD_REQUEST,Instant.now()));
-
     }
 
     @ExceptionHandler(ProcessException.class)
     public ResponseEntity<Object> emp(ProcessException exception) {
         return customErrorResponse(new ApiError(exception.getMessage(),exception.getHttpStatus(), Instant.now()));
-
     }
 
     @ExceptionHandler(UnitNotFoundException.class)
     public ResponseEntity<Object> emp(UnitNotFoundException exp) {
         return customErrorResponse(new ApiError(exp.getMessage(),exp.getHttpStatus(), Instant.now()));
+    }
 
+    @ExceptionHandler(ScreenException.class)
+    public ResponseEntity<Object> emp(ScreenException exp) {
+        return customErrorResponse(new ApiError(exp.getMessage(),exp.getHttpStatus(), Instant.now()));
     }
 
 

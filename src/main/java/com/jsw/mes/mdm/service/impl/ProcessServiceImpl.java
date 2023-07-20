@@ -83,11 +83,8 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     public Optional<ProcessMaster> getProcessMaster(String processName){
-
-        Optional<ProcessMaster> processMasterOptional = processRepository.findByProcessNameAndIsActive(processName,"Y");
         log.info("Query to fetch the list if any existing ProcessName is matching with given processName ");
-
-        return processMasterOptional;
+        return processRepository.findByProcessNameAndIsActive(processName,"Y");
     }
 
     @Override
@@ -96,8 +93,8 @@ public class ProcessServiceImpl implements ProcessService {
        Optional<ProcessMaster> processMasterOptional= getProcessMaster(processRequest.getProcessName());
 
         if(processMasterOptional.isEmpty()){
-            log.error("Process Already exists with the given processName");
-            throw new ProcessException("Process Already exists with the given processName", HttpStatus.NOT_FOUND);
+            log.error("Process does not exists with the given processName");
+            throw new ProcessException("Process does not exists with the given processName", HttpStatus.NOT_FOUND);
         }
 
        AppMaster appMaster = getAppMaster(processRequest.getAppId());
@@ -145,7 +142,7 @@ public class ProcessServiceImpl implements ProcessService {
     public ProcessResponse getProcess(int processId) {
 
         ProcessMaster processMaster = processRepository.findById(processId)
-                .orElseThrow(()-> new ProcessException("Process does not exists with the given processName", HttpStatus.NOT_FOUND));
+                .orElseThrow(()-> new ProcessException("Process does not exists with the given processId", HttpStatus.NOT_FOUND));
         log.info("Query to fetch the ProcessMaster based on processId");
 
         List<UnitMaster> unitMasterList = unitRepository.findAll()

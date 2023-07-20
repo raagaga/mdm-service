@@ -4,6 +4,7 @@ package com.jsw.mes.mdm.entity;
 import com.jsw.mes.mdm.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
@@ -16,6 +17,7 @@ import java.time.Instant;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "MesScreenMst", schema = "user_service",uniqueConstraints={@UniqueConstraint(columnNames={"screenName"})})
 public class ScreenMaster extends BaseEntity implements Serializable {
 
@@ -42,6 +44,7 @@ public class ScreenMaster extends BaseEntity implements Serializable {
     private String screenType;
 
     @Column(name = "isActive")
+    @Length(min=0,max = 1)
     private String isActive;
 
 }

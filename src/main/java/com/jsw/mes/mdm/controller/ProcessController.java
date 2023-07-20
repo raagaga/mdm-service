@@ -87,7 +87,7 @@ public class ProcessController {
                 .body(Response.of(processService.getProcess(processId)));
     }
 
-    @GetMapping("")
+    @GetMapping()
     @Operation(summary = "Get All Process")
     @ApiResponses(
             value = {
