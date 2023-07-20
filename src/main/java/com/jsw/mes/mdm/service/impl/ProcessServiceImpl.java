@@ -9,9 +9,8 @@ import com.jsw.mes.mdm.model.request.ProcessRequest;
 import com.jsw.mes.mdm.model.response.ProcessResponse;
 import com.jsw.mes.mdm.repository.AppMasterRepository;
 import com.jsw.mes.mdm.repository.ProcessRepository;
-import com.jsw.mes.mdm.repository.UnitMasterRepository;
+import com.jsw.mes.mdm.repository.UnitRepository;
 import com.jsw.mes.mdm.service.ProcessService;
-import jakarta.persistence.EntityManager;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,16 +24,16 @@ public class ProcessServiceImpl implements ProcessService {
 
     private final AppMasterRepository appMasterRepository;
 
-    private final UnitMasterRepository unitMasterRepository;
+    private final UnitRepository unitRepository;
 
     private final ProcessRepository processRepository;
 
     private final ProcessMapper processMapper;
 
 
-    public ProcessServiceImpl(AppMasterRepository appMasterRepository, UnitMasterRepository unitMasterRepository, ProcessRepository processRepository, ProcessMapper processMapper) {
+    public ProcessServiceImpl(AppMasterRepository appMasterRepository, UnitRepository unitRepository, ProcessRepository processRepository, ProcessMapper processMapper) {
         this.appMasterRepository = appMasterRepository;
-        this.unitMasterRepository = unitMasterRepository;
+        this.unitRepository = unitRepository;
         this.processRepository = processRepository;
         this.processMapper = processMapper;
     }
@@ -62,7 +61,7 @@ public class ProcessServiceImpl implements ProcessService {
         log.info("ProcessMaster record is saved");
 
         unitMaster.getProcessMstList().add(processMaster);
-        unitMasterRepository.save(unitMaster);
+        unitRepository.save(unitMaster);
         log.info("ProcessMaster is mapped to UnitMaster");
 
         appMaster.getProcessMstList().add(processMaster);
@@ -79,7 +78,7 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     public UnitMaster getUnitMaster(int id){
-       return unitMasterRepository.findByUnitIdAndIsActive(id,"Y")
+       return unitRepository.findByUnitIdAndIsActive(id,"Y")
                 .orElseThrow( () -> new ProcessException("UnitIdFound", HttpStatus.NOT_FOUND));
     }
 
@@ -116,7 +115,7 @@ public class ProcessServiceImpl implements ProcessService {
 
         if (!unitMaster.getProcessMstList().stream().anyMatch(process -> process.getProcessId() == processMasterOptional.get().getProcessId())) {
             unitMaster.getProcessMstList().add(mapperProcessMaster);
-            unitMasterRepository.save(unitMaster);
+            unitRepository.save(unitMaster);
             log.info("ProcessMaster is mapped to UnitMaster if it is not mapped already");
         }
 
@@ -149,7 +148,7 @@ public class ProcessServiceImpl implements ProcessService {
                 .orElseThrow(()-> new ProcessException("Process does not exists with the given processName", HttpStatus.NOT_FOUND));
         log.info("Query to fetch the ProcessMaster based on processId");
 
-        List<UnitMaster> unitMasterList = unitMasterRepository.findAll()
+        List<UnitMaster> unitMasterList = unitRepository.findAll()
                 .stream()
                 .filter(unitMaster -> unitMaster.getProcessMstList().stream().anyMatch(process -> process.getProcessId() == processId))
                 .collect(Collectors.toList());

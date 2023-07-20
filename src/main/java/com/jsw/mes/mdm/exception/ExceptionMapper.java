@@ -33,6 +33,12 @@ public class ExceptionMapper extends ResponseEntityExceptionHandler  {
 
     }
 
+    @ExceptionHandler(UnitNotFoundException.class)
+    public ResponseEntity<Object> emp(UnitNotFoundException exp) {
+        return customErrorResponse(new ApiError(exp.getMessage(),exp.getHttpStatus(), Instant.now()));
+
+    }
+
 
 
 

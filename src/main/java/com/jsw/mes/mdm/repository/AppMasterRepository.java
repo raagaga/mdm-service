@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface AppMasterRepository extends JpaRepository<AppMaster,Integer> {
+public interface AppMasterRepository extends JpaRepository<AppMaster,Long> {
     Optional<AppMaster> findByAppIdAndIsActive(long appId, String y);
 }
