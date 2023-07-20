@@ -17,9 +17,11 @@ import java.time.Instant;
 @Builder
 public class ProcessMasterResponse {
 
-    private int appId;
+    private long appId;
 
     private int unitId;
+
+    private int processId;
 
     private String processName;
 
@@ -29,7 +31,7 @@ public class ProcessMasterResponse {
 
     private Instant createdDt;
 
-  private Long createdBy ;
+    private Long createdBy ;
 
     private Instant modifiedDt;;
 

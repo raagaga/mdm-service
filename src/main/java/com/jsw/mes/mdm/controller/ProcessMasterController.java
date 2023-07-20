@@ -37,6 +37,7 @@ public class ProcessMasterController {
                     @ApiResponse(responseCode = "404", description = "Invalid UnitId", content = @Content)
             })
     public ResponseEntity<Response<ProcessMasterResponse>> addProcess(@RequestBody ProcessMasterRequest processMasterRequest) {
+        log.info("Adding Process is started.......");
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(Response.of(processMasterService.addProcess(processMasterRequest)));
     }
@@ -50,6 +51,7 @@ public class ProcessMasterController {
                     @ApiResponse(responseCode = "404", description = "Invalid UnitId", content = @Content)
             })
     public ResponseEntity<Response<ProcessMasterResponse>> updateProcess(@RequestBody ProcessMasterRequest processMasterRequest) {
+        log.info("update Process is started.......");
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(Response.of(processMasterService.updateProcess(processMasterRequest)));
     }
@@ -66,6 +68,7 @@ public class ProcessMasterController {
             })
     public ResponseEntity<Response<ProcessMasterResponse>> deleteProcess(@RequestParam("processId") int processId) {
 
+        log.info("Delete Process is started.......");
         return ResponseEntity.status(HttpStatus.OK)
                 .body(Response.of(processMasterService.deleteProcess(processId)));
     }
@@ -81,6 +84,7 @@ public class ProcessMasterController {
                             content = @Content),
             })
     public ResponseEntity<Response<ProcessMasterResponse>> getProcess(@RequestParam("plantId") int processId) {
+        log.info("Get Process is started.......");
         return ResponseEntity.status(HttpStatus.OK)
                 .body(Response.of(processMasterService.getProcess(processId)));
     }
@@ -95,9 +99,10 @@ public class ProcessMasterController {
                             description = "No records found",
                             content = @Content),
             })
-    public ResponseEntity<Response<List<ProcessMasterResponse>>> getAllProcess() {
+    public ResponseEntity<Response<List<ProcessMasterResponse>>> getAllProcess(@RequestParam("appId")long appId,@RequestParam("unitId")int unitId) {
+        log.info("Get All Process is started.......");
         return ResponseEntity.status(HttpStatus.OK)
-                .body(Response.of(processMasterService.getAllProcess()));
+                .body(Response.of(processMasterService.getAllProcess(appId,unitId)));
     }
 
 

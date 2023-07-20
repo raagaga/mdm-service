@@ -16,5 +16,5 @@ public interface ProcessMasterService {
 
     ProcessMasterResponse getProcess(int processId);
 
-    List<ProcessMasterResponse> getAllProcess();
+    List<ProcessMasterResponse> getAllProcess(long appId,int unitId);
 }

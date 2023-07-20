@@ -15,8 +15,6 @@ public class ProcessMasterRequest {
 
     private int unitId;
 
-    private int processId;
-
     private String processName;
 
     private String processDescription;

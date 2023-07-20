@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface AppMasterRepository extends JpaRepository<AppMaster,Integer> {
-    Optional<AppMaster> findByAppIdAndIsActive(int appId, String y);
+    Optional<AppMaster> findByAppIdAndIsActive(long appId, String y);
 }

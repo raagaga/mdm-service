@@ -21,21 +21,20 @@ public class ExceptionMapper extends ResponseEntityExceptionHandler  {
     private ResponseEntity<Object> customErrorResponse(ApiError apiError) {
         return new ResponseEntity<>(apiError,apiError.getStatus());
     }
-  /*  private Exception log(final Exception exception) {
-        if (exception instanceof IllegalArgumentException
-                || exception instanceof ResourceNotFoundException) {
-            log.warn("exception-mapper cause={}, exception={}", exception.getMessage(), exception);
-        } else if (exception instanceof RuntimeException) {
-            log.error("exception-mapper cause={}, exception={}", exception.getMessage(), exception);
-        } else {
-            log.debug("exception-mapper cause={}, exception={}", exception.getMessage(), exception);
-        }*/
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<Object> badRequestException(BadRequestException exp) {
         return customErrorResponse(new ApiError(exp.getMessage(), HttpStatus.BAD_REQUEST,Instant.now()));
 
     }
+
+    @ExceptionHandler(ProcessMasterException.class)
+    public ResponseEntity<Object> emp(ProcessMasterException exception) {
+        return customErrorResponse(new ApiError(exception.getMessage(),exception.getHttpStatus(), Instant.now()));
+
+    }
+
+
 
 
 }
