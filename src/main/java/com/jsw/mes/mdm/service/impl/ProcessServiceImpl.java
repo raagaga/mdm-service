@@ -7,7 +7,7 @@ import com.jsw.mes.mdm.exception.ProcessException;
 import com.jsw.mes.mdm.mapper.ProcessMapper;
 import com.jsw.mes.mdm.model.request.ProcessRequest;
 import com.jsw.mes.mdm.model.response.ProcessResponse;
-import com.jsw.mes.mdm.repository.AppMasterRepository;
+import com.jsw.mes.mdm.repository.AppRepository;
 import com.jsw.mes.mdm.repository.ProcessRepository;
 import com.jsw.mes.mdm.repository.UnitRepository;
 import com.jsw.mes.mdm.service.ProcessService;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Log4j2
 public class ProcessServiceImpl implements ProcessService {
 
-    private final AppMasterRepository appMasterRepository;
+    private final AppRepository appRepository;
 
     private final UnitRepository unitRepository;
 
@@ -31,8 +31,8 @@ public class ProcessServiceImpl implements ProcessService {
     private final ProcessMapper processMapper;
 
 
-    public ProcessServiceImpl(AppMasterRepository appMasterRepository, UnitRepository unitRepository, ProcessRepository processRepository, ProcessMapper processMapper) {
-        this.appMasterRepository = appMasterRepository;
+    public ProcessServiceImpl(AppRepository appRepository, UnitRepository unitRepository, ProcessRepository processRepository, ProcessMapper processMapper) {
+        this.appRepository = appRepository;
         this.unitRepository = unitRepository;
         this.processRepository = processRepository;
         this.processMapper = processMapper;
@@ -65,7 +65,7 @@ public class ProcessServiceImpl implements ProcessService {
         log.info("ProcessMaster is mapped to UnitMaster");
 
         appMaster.getProcessMstList().add(processMaster);
-        appMasterRepository.save(appMaster);
+        appRepository.save(appMaster);
         log.info("ProcessMaster is mapped to AppMaster");
 
         return processMapper.toResponse(processMaster,appMaster.getAppId(),unitMaster.getUnitId());
@@ -106,7 +106,7 @@ public class ProcessServiceImpl implements ProcessService {
 
         if (!appMaster.getProcessMstList().stream().anyMatch(process -> process.getProcessId() == processMaster.getProcessId())) {
             appMaster.getProcessMstList().add(processMaster);
-            appMasterRepository.save(appMaster);
+            appRepository.save(appMaster);
             log.info("ProcessMaster is mapped to AppMaster if it is not mapped already");
         }
 
@@ -144,7 +144,7 @@ public class ProcessServiceImpl implements ProcessService {
             throw new ProcessException("ProcessMaster with the given processId is not mapped to UnitMaster",HttpStatus.NOT_FOUND);
         }
 
-        List<AppMaster> appMasterList = appMasterRepository.findAll()
+        List<AppMaster> appMasterList = appRepository.findAll()
                 .stream()
                 .filter(appMaster -> appMaster.getProcessMstList().stream().anyMatch(process -> process.getProcessId() == processId))
                 .collect(Collectors.toList());
@@ -185,7 +185,7 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     public AppMaster getAppMaster(long id){
-        return appMasterRepository.findByAppIdAndIsActive(id,"Y")
+        return appRepository.findByAppIdAndIsActive(id,"Y")
                 .orElseThrow( () -> new ProcessException("App Not Found with the given appId: "+id, HttpStatus.NOT_FOUND));
     }
 

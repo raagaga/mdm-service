@@ -96,7 +96,7 @@ public class PlantController {
         .body(Response.of(plantMapper.toResponse(plantService.updatePlant(plantRequest))));
   }
 
-  @DeleteMapping()
+  @DeleteMapping
   @Operation(summary = "Delete Plant")
   @ApiResponses(
       value = {

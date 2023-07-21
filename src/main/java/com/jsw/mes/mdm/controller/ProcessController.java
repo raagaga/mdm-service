@@ -54,7 +54,7 @@ public class ProcessController {
                 .body(Response.of(processService.updateProcess(processRequest)));
     }
 
-    @DeleteMapping()
+    @DeleteMapping
     @Operation(summary = "Delete Process")
     @ApiResponses(
             value = {
@@ -87,7 +87,7 @@ public class ProcessController {
                 .body(Response.of(processService.getProcess(processId)));
     }
 
-    @GetMapping()
+    @GetMapping("/{appId}/{unitId}")
     @Operation(summary = "Get All Process")
     @ApiResponses(
             value = {

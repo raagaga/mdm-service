@@ -55,7 +55,7 @@ public class ScreenController {
                 .body(Response.of(screenService.updateScreen(screenRequest)));
     }
 
-    @DeleteMapping()
+    @DeleteMapping
     @Operation(summary = "Delete Screen")
     @ApiResponses(
             value = {
@@ -88,7 +88,7 @@ public class ScreenController {
                 .body(Response.of(screenService.getScreen(screenId)));
     }
 
-    @GetMapping()
+    @GetMapping
     @Operation(summary = "Get All Screens")
     @ApiResponses(
             value = {
