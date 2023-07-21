@@ -21,12 +21,12 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/plant")
 @Log4j2
-public class PlantMasterController {
+public class PlantController {
 
   private final PlantMasterService plantMasterService;
   private final PlantMapper plantMapper;
 
-  public PlantMasterController(PlantMasterService plantMasterService, PlantMapper plantMapper) {
+  public PlantController(PlantMasterService plantMasterService, PlantMapper plantMapper) {
     this.plantMasterService = plantMasterService;
     this.plantMapper = plantMapper;
   }
@@ -39,6 +39,8 @@ public class PlantMasterController {
         @ApiResponse(responseCode = "404", description = "Invalid Plant Name", content = @Content),
       })
   public ResponseEntity<Response<PlantResponse>> addPlant(@RequestBody PlantRequest plantRequest) {
+
+    log.info("add plant is started.........");
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(Response.of(plantMapper.toResponse(plantMasterService.addPlant(plantRequest))));
   }
@@ -55,7 +57,12 @@ public class PlantMasterController {
             content = @Content),
       })
   public ResponseEntity<Response<List<PlantResponse>>> getAllPlants() {
+
+    log.info("Get All plants is started.........");
+
     List<PlantMaster> plantMasterList = plantMasterService.getAllPlant();
+
+    log.info("Get All plants is Ended");
     return ResponseEntity.ok(
         Response.of(
             plantMasterList.stream().map(plantMapper::toResponse).collect(Collectors.toList())));
@@ -71,6 +78,7 @@ public class PlantMasterController {
                           content = @Content),
           })
   public ResponseEntity<Response<PlantResponse>> getPlant(@RequestParam("plantId") int plantId) {
+    log.info("Get plant is started.........");
     return ResponseEntity.ok(
             Response.of(plantMapper.toResponse(plantMasterService.getPlant(plantId))));
   }
@@ -83,6 +91,7 @@ public class PlantMasterController {
         @ApiResponse(responseCode = "404", description = "Invalid Plant Name", content = @Content),
       })
   public ResponseEntity<Response<PlantResponse>> updatePlant(@RequestBody PlantRequest plantRequest) {
+    log.info("update plant is started.........");
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(Response.of(plantMapper.toResponse(plantMasterService.updatePlant(plantRequest))));
   }
@@ -98,7 +107,7 @@ public class PlantMasterController {
             content = @Content),
       })
   public ResponseEntity<Response<PlantResponse>> deletePlant(@RequestParam("plantId") int plantId) {
-
+    log.info("Delete plant is started.........");
     return ResponseEntity.ok(
         Response.of(plantMapper.toResponse(plantMasterService.deletePlant(plantId))));
   }

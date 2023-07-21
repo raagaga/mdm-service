@@ -11,4 +11,5 @@ public interface ProcessRepository extends JpaRepository<ProcessMaster,Integer> 
 
     Optional<ProcessMaster> findByProcessNameAndIsActive(String processName, String y);
 
+    Optional<ProcessMaster> findByProcessIdAndIsActive(int processId, String y);
 }

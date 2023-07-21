@@ -9,14 +9,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PlantMasterRepository extends JpaRepository<PlantMaster, Integer> {
+public interface PlantRepository extends JpaRepository<PlantMaster, Integer> {
 
 
   Optional<PlantMaster> findByPlantNameAndIsActive(String plantName, String isActive);
 
   List<PlantMaster> findAllByIsActive(String isActive);
 
-  PlantMaster findByPlantIdAndIsActive(int plantId, String isActive);
+  Optional<PlantMaster> findByPlantIdAndIsActive(int plantId, String isActive);
 
   @Query(value = "update mes_plant_mst set isActive='N' where plantId=:plantId",nativeQuery = true)
   PlantMaster updatePlant(int plantId);

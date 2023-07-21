@@ -13,4 +13,6 @@ public interface ScreenRepository extends JpaRepository<ScreenMaster,Integer> {
     Optional<ScreenMaster> findByScreenNameAndIsActive(String screenName, String y);
 
     List<ScreenMaster> findByParentIdAndIsActive(int parentId, String y);
+
+    Optional<ScreenMaster> findByScreenIdAndIsActive(int screenId,String y);
 }

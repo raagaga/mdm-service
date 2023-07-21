@@ -72,29 +72,17 @@ public class ProcessServiceImpl implements ProcessService {
 
     }
 
-    public AppMaster getAppMaster(long id){
-       return appMasterRepository.findByAppIdAndIsActive(id,"Y")
-                .orElseThrow( () -> new ProcessException("AppId NotFound", HttpStatus.NOT_FOUND));
-    }
-
-    public UnitMaster getUnitMaster(int id){
-       return unitRepository.findByUnitIdAndIsActive(id,"Y")
-                .orElseThrow( () -> new ProcessException("UnitIdFound", HttpStatus.NOT_FOUND));
-    }
-
-    public Optional<ProcessMaster> getProcessMaster(String processName){
-        log.info("Query to fetch the list if any existing ProcessName is matching with given processName ");
-        return processRepository.findByProcessNameAndIsActive(processName,"Y");
-    }
-
     @Override
     public ProcessResponse updateProcess(ProcessRequest processRequest) {
 
-       Optional<ProcessMaster> processMasterOptional= getProcessMaster(processRequest.getProcessName());
+        ProcessMaster processMaster=processRepository.findById(processRequest.getProcessId())
+                .orElseThrow(() -> new ProcessException("Process does not exists with the given processId",HttpStatus.NOT_FOUND) );
 
-        if(processMasterOptional.isEmpty()){
-            log.error("Process does not exists with the given processName");
-            throw new ProcessException("Process does not exists with the given processName", HttpStatus.NOT_FOUND);
+       Optional<ProcessMaster> processMasterValidation=getProcessMaster(processRequest.getProcessName());
+
+        if(!processMasterValidation.isEmpty() && processRequest.getProcessId() != processMasterValidation.get().getProcessId() ){
+            log.error("Process Already exists with the given processName");
+            throw new ProcessException("Process Already exists with the given processName", HttpStatus.NOT_FOUND);
         }
 
        AppMaster appMaster = getAppMaster(processRequest.getAppId());
@@ -106,18 +94,18 @@ public class ProcessServiceImpl implements ProcessService {
         ProcessMaster mapperProcessMaster= processMapper.toEntity(processRequest);
         log.info("ProcessRequest is mapped to ProcessMaster");
 
-        mapperProcessMaster.setProcessId(processMasterOptional.get().getProcessId());
+        mapperProcessMaster.setProcessId(processMaster.getProcessId());
         processRepository.save(mapperProcessMaster);
         log.info("ProcessMaster record is updated");
 
-        if (!unitMaster.getProcessMstList().stream().anyMatch(process -> process.getProcessId() == processMasterOptional.get().getProcessId())) {
+        if (!unitMaster.getProcessMstList().stream().anyMatch(process -> process.getProcessId() == processMaster.getProcessId())) {
             unitMaster.getProcessMstList().add(mapperProcessMaster);
             unitRepository.save(unitMaster);
             log.info("ProcessMaster is mapped to UnitMaster if it is not mapped already");
         }
 
-        if (!appMaster.getProcessMstList().stream().anyMatch(process -> process.getProcessId() == processMasterOptional.get().getProcessId())) {
-            appMaster.getProcessMstList().add(processMasterOptional.get());
+        if (!appMaster.getProcessMstList().stream().anyMatch(process -> process.getProcessId() == processMaster.getProcessId())) {
+            appMaster.getProcessMstList().add(processMaster);
             appMasterRepository.save(appMaster);
             log.info("ProcessMaster is mapped to AppMaster if it is not mapped already");
         }
@@ -128,9 +116,7 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     public ProcessResponse deleteProcess(int processId) {
 
-        ProcessMaster processMaster = processRepository.findById(processId)
-                .orElseThrow(()-> new ProcessException("Process does not exists with the given processName", HttpStatus.NOT_FOUND));
-        log.info("Query to fetch the ProcessMaster based on processId");
+        ProcessMaster processMaster=getProcessMasterById(processId);
 
         processMaster.setIsActive("N");
         log.info("ProcessMaster is setting as InActive");
@@ -141,9 +127,7 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     public ProcessResponse getProcess(int processId) {
 
-        ProcessMaster processMaster = processRepository.findById(processId)
-                .orElseThrow(()-> new ProcessException("Process does not exists with the given processId", HttpStatus.NOT_FOUND));
-        log.info("Query to fetch the ProcessMaster based on processId");
+        ProcessMaster processMaster=getProcessMasterById(processId);
 
         List<UnitMaster> unitMasterList = unitRepository.findAll()
                 .stream()
@@ -194,6 +178,28 @@ public class ProcessServiceImpl implements ProcessService {
 
         return processMasterList.stream()
                 .map(processMaster -> processMapper.toResponse(processMaster,appId,unitId)).collect(Collectors.toList());
+    }
+
+    public AppMaster getAppMaster(long id){
+        return appMasterRepository.findByAppIdAndIsActive(id,"Y")
+                .orElseThrow( () -> new ProcessException("AppId NotFound", HttpStatus.NOT_FOUND));
+    }
+
+    public UnitMaster getUnitMaster(int id){
+        return unitRepository.findByUnitIdAndIsActive(id,"Y")
+                .orElseThrow( () -> new ProcessException("UnitIdFound", HttpStatus.NOT_FOUND));
+    }
+
+    public Optional<ProcessMaster> getProcessMaster(String processName){
+        log.info("Query to fetch the list if any existing ProcessName is matching with given processName ");
+        return processRepository.findByProcessNameAndIsActive(processName,"Y");
+    }
+
+    public ProcessMaster getProcessMasterById(int processId){
+        log.info("Query to fetch the ProcessMaster based on processId");
+        return processRepository.findByProcessIdAndIsActive(processId,"Y")
+                .orElseThrow(()-> new ProcessException("Process does not exists with the given processId", HttpStatus.NOT_FOUND));
+
     }
 
 
