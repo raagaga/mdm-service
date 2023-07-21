@@ -31,8 +31,8 @@ public class ExceptionMapper extends ResponseEntityExceptionHandler  {
         return customErrorResponse(new ApiError(exception.getMessage(),exception.getHttpStatus(), Instant.now()));
     }
 
-    @ExceptionHandler(UnitNotFoundException.class)
-    public ResponseEntity<Object> emp(UnitNotFoundException exp) {
+    @ExceptionHandler(UnitException.class)
+    public ResponseEntity<Object> emp(UnitException exp) {
         return customErrorResponse(new ApiError(exp.getMessage(),exp.getHttpStatus(), Instant.now()));
     }
 

@@ -15,6 +15,8 @@ public class ProcessRequest {
 
     private int unitId;
 
+    private int processId;
+
     private String processName;
 
     private String processDescription;

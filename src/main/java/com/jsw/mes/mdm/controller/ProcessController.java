@@ -81,7 +81,7 @@ public class ProcessController {
                             description = "Invalid process id provided",
                             content = @Content),
             })
-    public ResponseEntity<Response<ProcessResponse>> getProcess(@RequestParam("plantId") int processId) {
+    public ResponseEntity<Response<ProcessResponse>> getProcess(@RequestParam("processId") int processId) {
         log.info("Get Process is started.......");
         return ResponseEntity.status(HttpStatus.OK)
                 .body(Response.of(processService.getProcess(processId)));

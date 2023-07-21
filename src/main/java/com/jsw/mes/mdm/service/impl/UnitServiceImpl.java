@@ -3,12 +3,12 @@ package com.jsw.mes.mdm.service.impl;
 import com.jsw.mes.mdm.entity.AppMaster;
 import com.jsw.mes.mdm.entity.PlantMaster;
 import com.jsw.mes.mdm.entity.UnitMaster;
-import com.jsw.mes.mdm.exception.UnitNotFoundException;
+import com.jsw.mes.mdm.exception.UnitException;
 import com.jsw.mes.mdm.mapper.UnitMapper;
 import com.jsw.mes.mdm.model.request.UnitRequest;
 import com.jsw.mes.mdm.model.response.UnitResponse;
 import com.jsw.mes.mdm.repository.AppMasterRepository;
-import com.jsw.mes.mdm.repository.PlantMasterRepository;
+import com.jsw.mes.mdm.repository.PlantRepository;
 import com.jsw.mes.mdm.repository.UnitRepository;
 import com.jsw.mes.mdm.service.UnitService;
 import lombok.extern.log4j.Log4j2;
@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,16 +23,16 @@ import java.util.stream.Collectors;
 public class UnitServiceImpl implements UnitService
 {
     private final UnitRepository unitRepository ;
-    private final PlantMasterRepository plantMasterRepository ;
+    private final PlantRepository plantRepository;
     private final AppMasterRepository appMasterRepository;
 
     private final UnitMapper unitMapper;
 
     public UnitServiceImpl(UnitRepository unitRepository,
-                           PlantMasterRepository plantMasterRepository, AppMasterRepository appMasterRepository, UnitMapper unitMapper
+                           PlantRepository plantRepository, AppMasterRepository appMasterRepository, UnitMapper unitMapper
     ) {
         this.unitRepository = unitRepository;
-        this.plantMasterRepository = plantMasterRepository;
+        this.plantRepository = plantRepository;
         this.appMasterRepository = appMasterRepository;
         this.unitMapper = unitMapper;
     }
@@ -43,29 +42,29 @@ public class UnitServiceImpl implements UnitService
         if(unitRequest.getUnitName().isEmpty())
         {
             log.error("Enter correct details...");
-            throw new UnitNotFoundException("Enter correct name...",HttpStatus.NOT_FOUND);
+            throw new UnitException("Enter correct name...",HttpStatus.NOT_FOUND);
         }
         UnitMaster unitMasterOptional = unitRepository.getByUnitName(unitRequest.getUnitName())
-                .orElseThrow(() -> new UnitNotFoundException("UnitMaster already exists...",HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new UnitException("UnitMaster already exists...",HttpStatus.NOT_FOUND));
 
         if(!unitRequest.getIsActive().equals("Y")){
             log.error("Enter isActive as Y");
-            throw new UnitNotFoundException("Enter isActive as 'Y'",HttpStatus.NOT_FOUND);
+            throw new UnitException("Enter isActive as 'Y'",HttpStatus.NOT_FOUND);
         }
-        if(!plantMasterRepository.existsById(unitRequest.getPlantId()))
+        if(!plantRepository.existsById(unitRequest.getPlantId()))
         {
             log.error("Enter correct ID's for plantMaster");
-            throw new UnitNotFoundException("Enter correct Plant ID",HttpStatus.NOT_FOUND);
+            throw new UnitException("Enter correct Plant ID",HttpStatus.NOT_FOUND);
         }
 
         if(!appMasterRepository.existsById(unitRequest.getAppId()))
         {
             log.error("Enter correct ID's for appMaster");
-            throw new UnitNotFoundException("Enter correct App ID",HttpStatus.NOT_FOUND);
+            throw new UnitException("Enter correct App ID",HttpStatus.NOT_FOUND);
         }
         UnitMaster unitMaster = unitMapper.toEntity(unitRequest);
 
-        PlantMaster plantMaster = plantMasterRepository.findById(unitRequest.getPlantId()).get();
+        PlantMaster plantMaster = plantRepository.findById(unitRequest.getPlantId()).get();
         plantMaster.getUnitMstList().add(unitMaster);
 
         AppMaster appMaster = appMasterRepository.findById(unitRequest.getAppId()).get();
@@ -80,30 +79,30 @@ public class UnitServiceImpl implements UnitService
         if(unitRequest.getUnitName().isEmpty())
         {
             log.error("Enter correct details...");
-            throw new UnitNotFoundException("Enter correct name...",HttpStatus.NOT_FOUND);
+            throw new UnitException("Enter correct name...",HttpStatus.NOT_FOUND);
         }
         UnitMaster unitMasterOptional = unitRepository.getByUnitName(unitRequest.getUnitName())
-                .orElseThrow(() -> new UnitNotFoundException("UnitMaster already exists...",HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new UnitException("UnitMaster already exists...",HttpStatus.NOT_FOUND));
 
         if(!unitRequest.getIsActive().equals("Y")){
             log.error("Enter isActive as Y");
-            throw new UnitNotFoundException("Enter isActive as 'Y'",HttpStatus.NOT_FOUND);
+            throw new UnitException("Enter isActive as 'Y'",HttpStatus.NOT_FOUND);
         }
-        if(!plantMasterRepository.existsById(unitRequest.getPlantId()))
+        if(!plantRepository.existsById(unitRequest.getPlantId()))
         {
             log.error("Enter correct ID's for plantMaster");
-            throw new UnitNotFoundException("Enter correct Plant ID",HttpStatus.NOT_FOUND);
+            throw new UnitException("Enter correct Plant ID",HttpStatus.NOT_FOUND);
         }
 
         if(!appMasterRepository.existsById(unitRequest.getAppId()))
         {
             log.error("Enter correct ID's for appMaster");
-            throw new UnitNotFoundException("Enter correct App ID",HttpStatus.NOT_FOUND);
+            throw new UnitException("Enter correct App ID",HttpStatus.NOT_FOUND);
         }
 
         UnitMaster unitMaster = unitMapper.toEntity(unitRequest);
 
-        PlantMaster plantMaster = plantMasterRepository.findById(unitRequest.getPlantId()).get();
+        PlantMaster plantMaster = plantRepository.findById(unitRequest.getPlantId()).get();
         plantMaster.getUnitMstList().add(unitMaster);
 
         AppMaster appMaster = appMasterRepository.findById(unitRequest.getAppId()).get();
@@ -115,7 +114,7 @@ public class UnitServiceImpl implements UnitService
     @Override
     public UnitResponse deleteUnitMaster(int unitId) {
         UnitMaster master = unitRepository.findById(unitId)
-                .orElseThrow(()->new UnitNotFoundException("Id not found",HttpStatus.NOT_FOUND));
+                .orElseThrow(()->new UnitException("Id not found",HttpStatus.NOT_FOUND));
         master.setIsActive("N");
         return unitMapper.toResponse(unitRepository.save(master));
     }
@@ -123,9 +122,9 @@ public class UnitServiceImpl implements UnitService
     @Override
     public UnitResponse getUnitMaster(int unitId) {
         UnitMaster unitMaster = unitRepository.findById(unitId)
-                .orElseThrow(()-> new UnitNotFoundException("UnitId not found",HttpStatus.NOT_FOUND));
+                .orElseThrow(()-> new UnitException("UnitId not found",HttpStatus.NOT_FOUND));
 
-        List<PlantMaster> plantMasterList = plantMasterRepository.findAll()
+        List<PlantMaster> plantMasterList = plantRepository.findAll()
                 .stream().filter(plantMaster -> plantMaster.getUnitMstList().stream().anyMatch(unit -> unit.getUnitId()
                         == unitId)).collect(Collectors.toList());
 
@@ -143,7 +142,7 @@ public class UnitServiceImpl implements UnitService
         if(unitMasterList.isEmpty())
         {
             log.error("No unit's found...");
-            throw new UnitNotFoundException("UnitMasters not found",HttpStatus.NOT_FOUND);
+            throw new UnitException("UnitMasters not found",HttpStatus.NOT_FOUND);
         }
         return unitMasterList.stream().map(unitMaster -> getUnitMaster(unitMaster.getUnitId())).collect(Collectors.toList());
     }

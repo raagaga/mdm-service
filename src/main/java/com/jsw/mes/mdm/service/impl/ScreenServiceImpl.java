@@ -46,17 +46,25 @@ public class ScreenServiceImpl implements ScreenService {
 
     }
 
+
     @Override
     public ScreenResponse updateScreen(ScreenRequest screenRequest) {
 
-        ScreenMaster screenMasterOptional= screenRepository.findById(screenRequest.getScreenId())
-                .orElseThrow( () -> new ProcessException("Screen does not exists with the given screenID", HttpStatus.NOT_FOUND));
+        ScreenMaster screenMaster=screenRepository.findById(screenRequest.getScreenId())
+                .orElseThrow(() -> new ProcessException("Screen does not exists with the given screenId",HttpStatus.NOT_FOUND) );
 
-        ScreenMaster screenMaster= screenMapper.toEntity(screenRequest);
+        Optional<ScreenMaster> screenMasterOptional=getScreenMaster(screenRequest.getScreenName());
+
+        if(!screenMasterOptional.isEmpty() && screenRequest.getScreenId() != screenMasterOptional.get().getScreenId() ){
+            log.error("Screen Already exists with the given screenName");
+            throw new ProcessException("Screen Already exists with the given screenName", HttpStatus.NOT_FOUND);
+        }
+
+        ScreenMaster screenMasterMapper= screenMapper.toEntity(screenRequest);
         log.info("ScreenRequest is mapped to screenMaster");
 
-        screenMaster.setScreenId(screenMasterOptional.getScreenId());
-        screenRepository.save(screenMaster);
+        screenMasterMapper.setScreenId(screenMaster.getScreenId());
+        screenRepository.save(screenMasterMapper);
         log.info("screenMaster record is updated");
 
         return screenMapper.toResponse(screenMaster);
@@ -65,8 +73,7 @@ public class ScreenServiceImpl implements ScreenService {
     @Override
     public ScreenResponse deleteScreen(int screenId) {
 
-        ScreenMaster screenMaster = screenRepository.findById(screenId)
-                .orElseThrow(()-> new ScreenException("Screen does not exists with the given screenName", HttpStatus.NOT_FOUND));
+        ScreenMaster screenMaster = getScreenMasterById(screenId);
         log.info("Query to fetch the ScreenMaster based on screenId");
 
         screenMaster.setIsActive("N");
@@ -79,9 +86,7 @@ public class ScreenServiceImpl implements ScreenService {
     public ScreenResponse getScreen(int screenId) {
 
         log.info("Query to fetch the ProcessMaster based on processId");
-
-        return   screenMapper.toResponse(screenRepository.findById(screenId)
-                .orElseThrow(()-> new ScreenException("Screen does not exists with the given screenId", HttpStatus.NOT_FOUND)));
+        return screenMapper.toResponse(getScreenMasterById(screenId));
 
     }
 
@@ -103,4 +108,11 @@ public class ScreenServiceImpl implements ScreenService {
         return screenRepository.findByScreenNameAndIsActive(screenName,"Y");
     }
 
+
+    public ScreenMaster getScreenMasterById(int screenId){
+        log.info("Query to fetch the ScreenMaster based on screenId");
+        return screenRepository.findByScreenIdAndIsActive(screenId,"Y")
+                .orElseThrow(()-> new ScreenException("Screen does not exists with the given screenId", HttpStatus.NOT_FOUND));
+
+    }
 }
