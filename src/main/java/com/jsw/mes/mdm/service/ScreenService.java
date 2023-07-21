@@ -11,7 +11,7 @@ public interface ScreenService {
 
     ScreenResponse updateScreen(ScreenRequest screenRequest);
 
-    ScreenResponse deleteScreen(int screenId);
+    List<ScreenResponse> deleteScreen(List<Integer> screenIdsList);
 
     ScreenResponse getScreen(int screenId);
 

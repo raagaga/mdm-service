@@ -8,7 +8,7 @@ import com.jsw.mes.mdm.exception.WorkCenterException;
 import com.jsw.mes.mdm.mapper.WorkCenterMapper;
 import com.jsw.mes.mdm.model.request.WorkCenterRequest;
 import com.jsw.mes.mdm.model.response.WorkCenterResponse;
-import com.jsw.mes.mdm.repository.PlantMasterRepository;
+import com.jsw.mes.mdm.repository.PlantRepository;
 
 import com.jsw.mes.mdm.repository.ProcessRepository;
 
@@ -33,7 +33,7 @@ public class WorkCenterServiceImpl implements WorkCenterService {
     private final WorkCenterRepository workCenterRepository;
     private final WorkCenterMapper workCenterMapper;
     public WorkCenterServiceImpl(WorkCenterRepository workCenterMasterRepository, WorkCenterMapper workCenterMapper,
-                                 PlantMasterRepository plantMasterRepository,
+                                 PlantRepository plantMasterRepository,
                                  UnitRepository unitRepository, ProcessRepository processRepository) {
         this.workCenterRepository = workCenterMasterRepository;
         this.workCenterMapper = workCenterMapper;

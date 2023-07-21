@@ -54,7 +54,7 @@ public class ProcessController {
                 .body(Response.of(processService.updateProcess(processRequest)));
     }
 
-    @DeleteMapping("/{processId}")
+    @DeleteMapping()
     @Operation(summary = "Delete Process")
     @ApiResponses(
             value = {
@@ -64,11 +64,11 @@ public class ProcessController {
                             description = "Invalid Process",
                             content = @Content),
             })
-    public ResponseEntity<Response<ProcessResponse>> deleteProcess(@RequestParam("processId") int processId) {
+    public ResponseEntity<Response<List<ProcessResponse>>> deleteProcess(@RequestBody List<Integer> processIdsList) {
 
         log.info("Delete Process is started.......");
         return ResponseEntity.status(HttpStatus.OK)
-                .body(Response.of(processService.deleteProcess(processId)));
+                .body(Response.of(processService.deleteProcess(processIdsList)));
     }
 
     @GetMapping("/{processId}")

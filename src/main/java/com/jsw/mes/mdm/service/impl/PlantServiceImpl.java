@@ -4,6 +4,7 @@ import com.jsw.mes.mdm.entity.PlantMaster;
 import com.jsw.mes.mdm.exception.BadRequestException;
 import com.jsw.mes.mdm.mapper.PlantMapper;
 import com.jsw.mes.mdm.model.request.PlantRequest;
+import com.jsw.mes.mdm.model.response.PlantResponse;
 import com.jsw.mes.mdm.repository.PlantRepository;
 import com.jsw.mes.mdm.service.PlantMasterService;
 import lombok.extern.log4j.Log4j2;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -38,8 +40,8 @@ public class PlantServiceImpl implements PlantMasterService {
     log.info("Query to fetch based on plantName & isActive from plant");
 
     if (!plantMaster.isEmpty()) {
-        log.info("plantName already exists with the given name");
-        throw new BadRequestException("plantName already exists with the given name");
+        log.info("plantName already exists with the given name:"+plantRequest.getPlantName());
+        throw new BadRequestException("plantName already exists with the given name:"+plantRequest.getPlantName());
     }
     plantRequest.setIsActive("Y");
 
@@ -63,8 +65,8 @@ public class PlantServiceImpl implements PlantMasterService {
       log.info("Query to fetch based on plantName & isActive from plant");
 
       if (!plantMaster.isEmpty() && plantMasterOptional.get().getPlantId() == plantRequest.getPlantId()) {
-          log.info("plantName already exists with the given name");
-          throw new BadRequestException("plantName already exists with the given name");
+          log.info("plantName already exists with the given name:"+plantRequest.getPlantName());
+          throw new BadRequestException("plantName already exists with the given name:"+plantRequest.getPlantName());
       }
 
     return plantRepository.save(
@@ -77,25 +79,26 @@ public class PlantServiceImpl implements PlantMasterService {
   }
 
   @Override
-  public PlantMaster deletePlant(int plantId) {
+  public List<PlantResponse> deletePlant(List<Integer> plantIdsList) {
 
-      PlantMaster plantMaster= plantRepository.findByPlantIdAndIsActive(plantId,"Y")
-              .orElseThrow(() -> new BadRequestException("Plant info not available"));
-      log.info("Query to fetch based on plantId & isActive from plant");
+        return plantIdsList.stream().map(
+                integer -> {
+                    PlantMaster plantMaster=getPlant(integer);
+                    plantMaster.setIsActive("N");
+                    log.info("plantMaster is setting as InActive");
+                    return plantMapper.toResponse(plantRepository.save(plantMaster));
+                }
+        ).collect(Collectors.toList());
 
-      plantMaster.setIsActive("N");
-      log.info("plantMaster is setting as InActive");
-
-      return plantRepository.save(plantMaster);
-
-//        return plantRepository.updatePlant(plantId);
   }
 
     @Override
     public PlantMaster getPlant(int plantId) {
 
+        log.info("Query to fetch based on plantId & isActive from plant");
+
        return plantRepository.findByPlantIdAndIsActive(plantId,"Y")
-                .orElseThrow(() ->  new BadRequestException("Plant info not available with the given plantId"));
+                .orElseThrow(() ->  new BadRequestException("Plant info not available with the given plantId: "+plantId));
 
     }
 

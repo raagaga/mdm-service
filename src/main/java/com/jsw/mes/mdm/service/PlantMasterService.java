@@ -16,7 +16,7 @@ public interface PlantMasterService {
 
     public PlantMaster getPlant(int plantId);
 
-    public PlantMaster deletePlant(int plantId);
+    public List<PlantResponse> deletePlant( List<Integer> plantIdsList);
 
     public  List<PlantMaster> getAllPlant();
 }

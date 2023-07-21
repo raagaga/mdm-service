@@ -36,8 +36,8 @@ public class ScreenServiceImpl implements ScreenService {
         screenRequest.setIsActive("Y");
 
         if(!getScreenMaster(screenRequest.getScreenName()).isEmpty()){
-            log.error("Screen Already exists with the given ScreenName");
-            throw new ScreenException("Screen Already exists with the given ScreenName", HttpStatus.NOT_FOUND);
+            log.error("Screen Already exists with the given ScreenName: "+screenRequest.getScreenName());
+            throw new ScreenException("Screen Already exists with the given ScreenName: "+screenRequest.getScreenName(), HttpStatus.NOT_FOUND);
         }
 
         log.info("ScreenRequest is mapped to ScreenMaster & saved as saved & screenMaster is mapped to ScreenResponse");
@@ -71,15 +71,16 @@ public class ScreenServiceImpl implements ScreenService {
     }
 
     @Override
-    public ScreenResponse deleteScreen(int screenId) {
+    public List<ScreenResponse> deleteScreen(List<Integer> screenIdsList) {
 
-        ScreenMaster screenMaster = getScreenMasterById(screenId);
-        log.info("Query to fetch the ScreenMaster based on screenId");
 
-        screenMaster.setIsActive("N");
-        log.info("ProcessMaster is setting as InActive");
-
-        return screenMapper.toResponse(screenRepository.save(screenMaster));
+        return screenIdsList.stream().map(
+                integer -> {
+                    ScreenMaster screenMaster=getScreenMasterById(integer);
+                    screenMaster.setIsActive("N");
+                    log.info("ProcessMaster is setting as InActive");
+                    return screenMapper.toResponse(screenRepository.save(screenMaster));
+                }).collect(Collectors.toList());
     }
 
     @Override
@@ -112,7 +113,7 @@ public class ScreenServiceImpl implements ScreenService {
     public ScreenMaster getScreenMasterById(int screenId){
         log.info("Query to fetch the ScreenMaster based on screenId");
         return screenRepository.findByScreenIdAndIsActive(screenId,"Y")
-                .orElseThrow(()-> new ScreenException("Screen does not exists with the given screenId", HttpStatus.NOT_FOUND));
+                .orElseThrow(()-> new ScreenException("Screen does not exists with the given screenId: "+screenId, HttpStatus.NOT_FOUND));
 
     }
 }

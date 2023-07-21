@@ -11,7 +11,7 @@ public interface ProcessService {
 
     ProcessResponse updateProcess(ProcessRequest processRequest);
 
-    ProcessResponse deleteProcess(int processId);
+    List<ProcessResponse>  deleteProcess(List<Integer> processIdsList);
 
     ProcessResponse getProcess(int processId);
 

@@ -96,7 +96,7 @@ public class PlantController {
         .body(Response.of(plantMapper.toResponse(plantMasterService.updatePlant(plantRequest))));
   }
 
-  @DeleteMapping("/{plantId}")
+  @DeleteMapping()
   @Operation(summary = "Delete Plant")
   @ApiResponses(
       value = {
@@ -106,9 +106,9 @@ public class PlantController {
             description = "Invalid Plant plantId",
             content = @Content),
       })
-  public ResponseEntity<Response<PlantResponse>> deletePlant(@RequestParam("plantId") int plantId) {
+  public ResponseEntity<Response<List<PlantResponse>>> deletePlant(@RequestBody List<Integer> plantIdsList) {
     log.info("Delete plant is started.........");
     return ResponseEntity.ok(
-        Response.of(plantMapper.toResponse(plantMasterService.deletePlant(plantId))));
+        Response.of(plantMasterService.deletePlant(plantIdsList)));
   }
 }

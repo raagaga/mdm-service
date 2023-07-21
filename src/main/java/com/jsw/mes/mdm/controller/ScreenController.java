@@ -55,7 +55,7 @@ public class ScreenController {
                 .body(Response.of(screenService.updateScreen(screenRequest)));
     }
 
-    @DeleteMapping("/{screenId}")
+    @DeleteMapping()
     @Operation(summary = "Delete Screen")
     @ApiResponses(
             value = {
@@ -65,11 +65,11 @@ public class ScreenController {
                             description = "Invalid screen id provided with the request",
                             content = @Content),
             })
-    public ResponseEntity<Response<ScreenResponse>> deleteScreen(@RequestParam("screenId") int screenId) {
+    public ResponseEntity<Response<List<ScreenResponse>>> deleteScreen(@RequestBody List<Integer> screenIdsList) {
 
         log.info("Delete Screen is started.......");
         return ResponseEntity.status(HttpStatus.OK)
-                .body(Response.of(screenService.deleteScreen(screenId)));
+                .body(Response.of(screenService.deleteScreen(screenIdsList)));
     }
 
     @GetMapping("/{screenId}")
