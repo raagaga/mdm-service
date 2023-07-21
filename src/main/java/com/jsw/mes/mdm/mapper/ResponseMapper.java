@@ -1,12 +1,12 @@
 package com.jsw.mes.mdm.mapper;
 
 
+import com.jsw.mes.mdm.entity.ProcessMaster;
 import com.jsw.mes.mdm.entity.base.BaseEntity;
 
-public interface ResponseMapper<From extends BaseEntity, To> {
 
+public interface ResponseMapper<From extends BaseEntity, To> {
   To toResponse(From from);
 
-  To toResponse(From from,long primaryId,long secondaryId);
-
+//  ProcessMasterResponse toResponse(ProcessMaster processMaster, long primaryId, long secondaryId);
 }

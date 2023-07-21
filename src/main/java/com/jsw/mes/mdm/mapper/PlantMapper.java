@@ -1,8 +1,10 @@
 package com.jsw.mes.mdm.mapper;
 
 import com.jsw.mes.mdm.entity.PlantMaster;
+
 import com.jsw.mes.mdm.model.request.PlantRequest;
 import com.jsw.mes.mdm.model.response.PlantResponse;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,11 +23,6 @@ public class PlantMapper
         .plantName(plantMaster.getPlantName())
         .isActive(plantMaster.getIsActive())
         .build();
-  }
-
-  @Override
-  public PlantResponse toResponse(PlantMaster plantMaster, long primaryId, long secondaryId) {
-    return null;
   }
 
 }

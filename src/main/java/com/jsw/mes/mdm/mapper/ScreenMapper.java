@@ -36,7 +36,7 @@ public class ScreenMapper implements EntityMapper<ScreenRequest, ScreenMaster>,R
                 .build();
     }
 
-    @Override
+
     public ScreenResponse toResponse(ScreenMaster screenMaster, long primaryId, long secondaryId) {
         return null;
     }

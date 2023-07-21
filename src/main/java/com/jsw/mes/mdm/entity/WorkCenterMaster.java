@@ -3,6 +3,7 @@ package com.jsw.mes.mdm.entity;
 import com.jsw.mes.mdm.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
@@ -15,6 +16,7 @@ import java.time.Instant;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "MesWorkCenterMst", schema = "user_service",uniqueConstraints={@UniqueConstraint(columnNames={"workCenterName"})})
 public class WorkCenterMaster extends BaseEntity implements Serializable {
 
@@ -32,7 +34,9 @@ public class WorkCenterMaster extends BaseEntity implements Serializable {
     @Length(min=0,max = 100)
     private String workCenterDescription;
 
+
     @Column(name = "isActive")
+    @Length(max=1)
     private String isActive;
 
 }

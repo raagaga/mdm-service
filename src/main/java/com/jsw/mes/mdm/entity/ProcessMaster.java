@@ -37,11 +37,13 @@ public class ProcessMaster extends BaseEntity implements Serializable {
     @Length(min=0,max = 100)
     private String processDescription;
 
-    @Column(name = "isActive")
-    private String isActive;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "processId", referencedColumnName = "processId")
     private List< WorkCenterMaster > workCenterMstList = new ArrayList<WorkCenterMaster>();
+
+    @Column(name = "isActive")
+    @Length(max=1)
+    private String isActive;
 
 }

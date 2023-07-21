@@ -40,7 +40,16 @@ public class ExceptionMapper extends ResponseEntityExceptionHandler  {
     public ResponseEntity<Object> emp(ScreenException exp) {
         return customErrorResponse(new ApiError(exp.getMessage(),exp.getHttpStatus(), Instant.now()));
     }
+    @ExceptionHandler(WorkCenterException .class)
+    public ResponseEntity<Object> emp(WorkCenterException exception) {
+        return customErrorResponse(new ApiError(exception.getMessage(),exception.getHttpStatus(), Instant.now()));
 
+    }
+    @ExceptionHandler(DepartmentException .class)
+    public ResponseEntity<Object> emp(DepartmentException exception) {
+        return customErrorResponse(new ApiError(exception.getMessage(),exception.getHttpStatus(), Instant.now()));
+
+    }
 
 
 

@@ -26,7 +26,7 @@ public abstract class BaseEntity implements Serializable {
 
     @CreatedBy
     @Column(nullable = false, updatable = false)
-    private Long createdBy = 0L;
+    private long createdBy = Long.parseLong(String.valueOf(0L));
 
     @LastModifiedDate
     @Column(nullable = false)
@@ -34,6 +34,6 @@ public abstract class BaseEntity implements Serializable {
 
     @LastModifiedBy
     @Column(nullable = false)
-    private Long modifiedBy = 0L;
+    private Long modifiedBy = Long.valueOf(String.valueOf(0L));
 
 }
