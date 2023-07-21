@@ -8,17 +8,13 @@ import com.jsw.mes.mdm.exception.WorkCenterException;
 import com.jsw.mes.mdm.mapper.WorkCenterMapper;
 import com.jsw.mes.mdm.model.request.WorkCenterRequest;
 import com.jsw.mes.mdm.model.response.WorkCenterResponse;
-import com.jsw.mes.mdm.repository.PlantMasterRepository;
-
 import com.jsw.mes.mdm.repository.ProcessRepository;
-
 import com.jsw.mes.mdm.repository.UnitRepository;
 import com.jsw.mes.mdm.repository.WorkCenterRepository;
 import com.jsw.mes.mdm.service.WorkCenterService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -33,7 +29,7 @@ public class WorkCenterServiceImpl implements WorkCenterService {
     private final WorkCenterRepository workCenterRepository;
     private final WorkCenterMapper workCenterMapper;
     public WorkCenterServiceImpl(WorkCenterRepository workCenterMasterRepository, WorkCenterMapper workCenterMapper,
-                                 PlantMasterRepository plantMasterRepository,
+
                                  UnitRepository unitRepository, ProcessRepository processRepository) {
         this.workCenterRepository = workCenterMasterRepository;
         this.workCenterMapper = workCenterMapper;
