@@ -5,7 +5,7 @@ import com.jsw.mes.mdm.mapper.PlantMapper;
 import com.jsw.mes.mdm.model.request.PlantRequest;
 import com.jsw.mes.mdm.model.response.PlantResponse;
 import com.jsw.mes.mdm.model.response.Response;
-import com.jsw.mes.mdm.service.PlantMasterService;
+import com.jsw.mes.mdm.service.PlantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -23,11 +23,11 @@ import java.util.stream.Collectors;
 @Log4j2
 public class PlantController {
 
-  private final PlantMasterService plantMasterService;
+  private final PlantService plantService;
   private final PlantMapper plantMapper;
 
-  public PlantController(PlantMasterService plantMasterService, PlantMapper plantMapper) {
-    this.plantMasterService = plantMasterService;
+  public PlantController(PlantService plantService, PlantMapper plantMapper) {
+    this.plantService = plantService;
     this.plantMapper = plantMapper;
   }
 
@@ -42,7 +42,7 @@ public class PlantController {
 
     log.info("add plant is started.........");
     return ResponseEntity.status(HttpStatus.CREATED)
-        .body(Response.of(plantMapper.toResponse(plantMasterService.addPlant(plantRequest))));
+        .body(Response.of(plantMapper.toResponse(plantService.addPlant(plantRequest))));
   }
 
   @GetMapping
@@ -60,7 +60,7 @@ public class PlantController {
 
     log.info("Get All plants is started.........");
 
-    List<PlantMaster> plantMasterList = plantMasterService.getAllPlant();
+    List<PlantMaster> plantMasterList = plantService.getAllPlant();
 
     log.info("Get All plants is Ended");
     return ResponseEntity.ok(
@@ -80,7 +80,7 @@ public class PlantController {
   public ResponseEntity<Response<PlantResponse>> getPlant(@RequestParam("plantId") int plantId) {
     log.info("Get plant is started.........");
     return ResponseEntity.ok(
-            Response.of(plantMapper.toResponse(plantMasterService.getPlant(plantId))));
+            Response.of(plantMapper.toResponse(plantService.getPlant(plantId))));
   }
 
   @PutMapping
@@ -93,7 +93,7 @@ public class PlantController {
   public ResponseEntity<Response<PlantResponse>> updatePlant(@RequestBody PlantRequest plantRequest) {
     log.info("update plant is started.........");
     return ResponseEntity.status(HttpStatus.CREATED)
-        .body(Response.of(plantMapper.toResponse(plantMasterService.updatePlant(plantRequest))));
+        .body(Response.of(plantMapper.toResponse(plantService.updatePlant(plantRequest))));
   }
 
   @DeleteMapping()
@@ -109,6 +109,6 @@ public class PlantController {
   public ResponseEntity<Response<List<PlantResponse>>> deletePlant(@RequestBody List<Integer> plantIdsList) {
     log.info("Delete plant is started.........");
     return ResponseEntity.ok(
-        Response.of(plantMasterService.deletePlant(plantIdsList)));
+        Response.of(plantService.deletePlant(plantIdsList)));
   }
 }

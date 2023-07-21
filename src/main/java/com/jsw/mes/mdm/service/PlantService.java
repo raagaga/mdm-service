@@ -8,7 +8,7 @@ import com.jsw.mes.mdm.model.response.PlantResponse;
 import java.util.List;
 
 
-public interface PlantMasterService {
+public interface PlantService {
 
     public PlantMaster addPlant(PlantRequest plantRequest);
 
