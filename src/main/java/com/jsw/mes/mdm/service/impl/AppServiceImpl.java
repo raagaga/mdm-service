@@ -7,7 +7,7 @@ import com.jsw.mes.mdm.model.request.AppRequest;
 import com.jsw.mes.mdm.model.response.AppResponse;
 import com.jsw.mes.mdm.repository.AppRepository;
 import com.jsw.mes.mdm.service.AppService;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
-@Log4j2
+@Slf4j
 public class AppServiceImpl implements AppService
 {
     private final AppRepository appRepository;

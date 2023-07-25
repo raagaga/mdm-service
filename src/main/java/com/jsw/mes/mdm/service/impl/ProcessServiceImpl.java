@@ -11,7 +11,7 @@ import com.jsw.mes.mdm.repository.AppRepository;
 import com.jsw.mes.mdm.repository.ProcessRepository;
 import com.jsw.mes.mdm.repository.UnitRepository;
 import com.jsw.mes.mdm.service.ProcessService;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@Log4j2
+@Slf4j
 public class ProcessServiceImpl implements ProcessService {
 
     private final AppRepository appRepository;

@@ -9,7 +9,8 @@ import com.jsw.mes.mdm.model.request.ScreenRequest;
 import com.jsw.mes.mdm.model.response.ScreenResponse;
 import com.jsw.mes.mdm.repository.ScreenRepository;
 import com.jsw.mes.mdm.service.ScreenService;
-import lombok.extern.log4j.Log4j2;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Log4j2
+@Slf4j
 public class ScreenServiceImpl implements ScreenService {
 
     private final ScreenRepository screenRepository;
@@ -35,7 +36,7 @@ public class ScreenServiceImpl implements ScreenService {
 
         screenRequest.setIsActive("Y");
 
-        if(!getScreenMaster(screenRequest.getScreenName()).isEmpty()){
+        if(getScreenMaster(screenRequest.getScreenName()) != null){
             log.error("Screen Already exists with the given ScreenName: "+screenRequest.getScreenName());
             throw new ScreenException("Screen Already exists with the given ScreenName: "+screenRequest.getScreenName(), HttpStatus.NOT_FOUND);
         }
@@ -55,9 +56,9 @@ public class ScreenServiceImpl implements ScreenService {
 
         Optional<ScreenMaster> screenMasterOptional=getScreenMaster(screenRequest.getScreenName());
 
-        if(!screenMasterOptional.isEmpty() && screenRequest.getScreenId() != screenMasterOptional.get().getScreenId() ){
-            log.error("Screen Already exists with the given screenName");
-            throw new ProcessException("Screen Already exists with the given screenName", HttpStatus.NOT_FOUND);
+        if(!screenMasterOptional.isEmpty() && screenRequest.getScreenId() != screenMasterOptional.get().getScreenId()){
+                log.error("Screen Already exists with the given screenName");
+                throw new ProcessException("Screen Already exists with the given screenName", HttpStatus.NOT_FOUND);
         }
 
         ScreenMaster screenMasterMapper= screenMapper.toEntity(screenRequest);
@@ -96,7 +97,7 @@ public class ScreenServiceImpl implements ScreenService {
 
         List<ScreenMaster> screenMasters=screenRepository.findByParentIdAndIsActive(parentId,"Y");
 
-        if(screenMasters.isEmpty()){
+        if(screenMasters == null){
             throw new ScreenException("Screen records are not found with the given parentId",HttpStatus.NOT_FOUND);
         }
 
@@ -112,8 +113,13 @@ public class ScreenServiceImpl implements ScreenService {
 
     public ScreenMaster getScreenMasterById(int screenId){
         log.info("Query to fetch the ScreenMaster based on screenId");
-        return screenRepository.findByScreenIdAndIsActive(screenId,"Y")
-                .orElseThrow(()-> new ScreenException("Screen does not exists with the given screenId: "+screenId, HttpStatus.NOT_FOUND));
+        Optional<ScreenMaster> master= screenRepository.findByScreenIdAndIsActive(screenId,"Y");
+
+        if(master == null){
+            throw new ScreenException("Screen does not exists with the given screenId: "+screenId, HttpStatus.NOT_FOUND);
+        }
+
+        return master.get();
 
     }
 }

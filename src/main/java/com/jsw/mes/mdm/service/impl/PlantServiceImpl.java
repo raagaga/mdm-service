@@ -7,7 +7,7 @@ import com.jsw.mes.mdm.model.request.PlantRequest;
 import com.jsw.mes.mdm.model.response.PlantResponse;
 import com.jsw.mes.mdm.repository.PlantRepository;
 import com.jsw.mes.mdm.service.PlantService;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 
 @Service
-@Log4j2
+@Slf4j
 public class PlantServiceImpl implements PlantService {
 
     private final PlantRepository plantRepository;
@@ -64,7 +64,7 @@ public class PlantServiceImpl implements PlantService {
               plantRepository.findByPlantNameAndIsActive(plantRequest.getPlantName(), "Y");
       log.info("Query to fetch based on plantName & isActive from plant");
 
-      if (!plantMaster.isEmpty() && plantMasterOptional.get().getPlantId() == plantRequest.getPlantId()) {
+      if (!plantMasterOptional.isEmpty() && plantMasterOptional.get().getPlantId() != plantRequest.getPlantId()) {
           log.info("plantName already exists with the given name:"+plantRequest.getPlantName());
           throw new BadRequestException("plantName already exists with the given name:"+plantRequest.getPlantName());
       }

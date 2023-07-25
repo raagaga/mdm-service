@@ -7,7 +7,7 @@ import com.jsw.mes.mdm.model.request.DepartmentRequest;
 import com.jsw.mes.mdm.model.response.DepartmentResponse;
 import com.jsw.mes.mdm.repository.DepartmentRepository;
 import com.jsw.mes.mdm.service.DepartmentService;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Log4j2
+@Slf4j
 public class DepartmentServiceImpl implements DepartmentService {
 
     private final DepartmentRepository departmentRepository;

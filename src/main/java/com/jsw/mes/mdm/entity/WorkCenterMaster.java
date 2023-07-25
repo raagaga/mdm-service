@@ -11,6 +11,8 @@ import org.hibernate.validator.constraints.Range;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -38,5 +40,6 @@ public class WorkCenterMaster extends BaseEntity implements Serializable {
     @Column(name = "isActive")
     @Length(max=1)
     private String isActive;
+
 
 }

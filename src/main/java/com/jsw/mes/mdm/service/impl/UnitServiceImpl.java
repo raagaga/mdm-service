@@ -12,7 +12,7 @@ import com.jsw.mes.mdm.repository.AppRepository;
 import com.jsw.mes.mdm.repository.PlantRepository;
 import com.jsw.mes.mdm.repository.UnitRepository;
 import com.jsw.mes.mdm.service.UnitService;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-@Log4j2
+@Slf4j
 public class UnitServiceImpl implements UnitService
 {
     private final UnitRepository unitRepository ;
@@ -117,12 +117,21 @@ public class UnitServiceImpl implements UnitService
         unitRepository.save(unitMaster2);
 
         PlantMaster plantMaster = plantRepository.findById(unitRequest.getPlantId()).get();
-        plantMaster.getUnitMstList().add(unitMaster2);
-        plantRepository.save(plantMaster);
+
+        if (!plantMaster.getUnitMstList().stream().anyMatch(unitMaster -> unitMaster.getUnitId() == unitRequest.getUnitId())) {
+            plantMaster.getUnitMstList().add(unitMaster2);
+            plantRepository.save(plantMaster);
+        }
 
         AppMaster appMaster = appRepository.findById(unitRequest.getAppId()).get();
-        appMaster.getUnitMstList().add(unitMaster2);
-        appRepository.save(appMaster);
+
+        if (!appMaster.getUnitMstList().stream().anyMatch( unitMaster -> unitMaster.getUnitId() == unitRequest.getUnitId())) {
+            appMaster.getUnitMstList().add(unitMaster2);
+            appRepository.save(appMaster);
+        }
+
+
+
 
         return unitMapper.toResponse(unitRepository.save(unitMaster2), plantMaster.getPlantId(), appMaster.getAppId());
     }

@@ -39,4 +39,5 @@ public class PlantMaster extends BaseEntity {
     @JoinColumn(name = "plantId", referencedColumnName = "plantId")
     private List <UnitMaster> unitMstList = new ArrayList <UnitMaster>();
 
+
 }
