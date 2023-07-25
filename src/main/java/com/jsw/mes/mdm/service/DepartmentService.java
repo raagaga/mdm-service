@@ -10,7 +10,7 @@ public interface DepartmentService {
 
     public  DepartmentResponse updateDepartment(DepartmentRequest departmentRequest);
 
-    public  DepartmentResponse deleteDepartment(int departmentId);
+    public  List<DepartmentResponse> deleteDepartment(List<Integer> departmentIdsList);
 
     public  DepartmentResponse getDepartment(int departmentId);
 

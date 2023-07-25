@@ -51,15 +51,17 @@ public class DepartmentController {
         return  ResponseEntity.status(HttpStatus.OK)
                 .body(Response.of(departmentService.updateDepartment(departmentRequest)));
     }
-    @DeleteMapping("/{departmentId}")
+
+    @DeleteMapping
     @Operation(summary = "Delete Department")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "DepartmentMaster deleted successfully. "),
-            @ApiResponse(responseCode = "404", description = "InvalidDepartmentId  ", content = @Content)})
-    public ResponseEntity<Response<DepartmentResponse>> deleteDepartment(@RequestParam("departmentId") int departmentId) {
-        log.info("Delete Department is started.......");
-        return ResponseEntity.ok(
-                Response.of(departmentService.deleteDepartment(departmentId)));
+            @ApiResponse(responseCode = "204", description = "Department deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "InvalidDepartmentId ", content = @Content),
+    })
+    public ResponseEntity<Response<List<DepartmentResponse>>> deleteDepartment(@RequestBody List<Integer> departmentIdsList) {
+        log.info("delete Department is started.......");
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(Response.of(departmentService.deleteDepartment(departmentIdsList)));
     }
 
     @GetMapping("/{departmentId}")

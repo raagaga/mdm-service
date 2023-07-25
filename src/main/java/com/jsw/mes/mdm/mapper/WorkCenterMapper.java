@@ -61,14 +61,7 @@ public class WorkCenterMapper
                 .build();
 
     }
-//    public WorkCenterMaster toEntity(WorkCenterRequest workCenterRequest, int id) {
-//
-//        return WorkCenterMaster.builder()
-//                .workCenterId(id)
-//                .workCenterName(workCenterRequest.getWorkCenterName())
-//                .workCenterDescription(workCenterRequest.getWorkCenterDescription())
-//                .isActive(workCenterRequest.getIsActive())
-//                .build();
+
 
 
     }

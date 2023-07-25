@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface DepartmentRepository extends JpaRepository<DepartmentMaster, Integer> {
     Optional<DepartmentMaster> findByDepartmentNameAndIsActive(String departmentName, String y);
 
+    Optional<DepartmentMaster> findByDepartmentIdAndIsActive(int departmentId, String y);
 }

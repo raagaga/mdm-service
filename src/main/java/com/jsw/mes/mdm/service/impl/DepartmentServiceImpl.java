@@ -7,6 +7,7 @@ import com.jsw.mes.mdm.model.request.DepartmentRequest;
 import com.jsw.mes.mdm.model.response.DepartmentResponse;
 import com.jsw.mes.mdm.repository.DepartmentRepository;
 import com.jsw.mes.mdm.service.DepartmentService;
+import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -31,14 +32,14 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         departmentRequest.setIsActive("Y");
 
-        Optional<DepartmentMaster> departmentMasterOptional=departmentRepository.findByDepartmentNameAndIsActive(departmentRequest.getDepartmentName(),"Y");
+        Optional<DepartmentMaster> departmentMasterOptional = departmentRepository.findByDepartmentNameAndIsActive(departmentRequest.getDepartmentName(), "Y");
         log.info("Query to fetch the list if any existing DepartmentName is matching with given departmentName");
 
-        if(!departmentMasterOptional.isEmpty()){
-           log.error("Department Already exists with the given departmentName");
+        if (!departmentMasterOptional.isEmpty()) {
+            log.error("Department Already exists with the given departmentName");
             throw new DepartmentException("Department Already exists with the given departmentName", HttpStatus.NOT_FOUND);
-       }
-        DepartmentMaster departmentMaster=departmentMapper.toEntity(departmentRequest);
+        }
+        DepartmentMaster departmentMaster = departmentMapper.toEntity(departmentRequest);
         log.info("DepartmentRequest is mapped to DepartmentMaster");
 
         departmentRepository.save(departmentMaster);
@@ -46,50 +47,51 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         return departmentMapper.toResponse(departmentMaster);
     }
-    public Optional<DepartmentMaster> getDepartment(String departmentName){
-        log.info("Query to fetch the list if any existing DepartmentName is matching with given departmentName");
-        return departmentRepository.findByDepartmentNameAndIsActive(departmentName,"Y");
-    }
+
 
     @Override
     public DepartmentResponse updateDepartment(DepartmentRequest departmentRequest) {
-        Optional<DepartmentMaster> departmentMasterOptional= getDepartment(departmentRequest.getDepartmentName());
+        DepartmentMaster departmentMaster=departmentRepository.findById(departmentRequest.getDepartmentId())
+                .orElseThrow(()-> new DepartmentException("Department does not exists with the given departmentId",HttpStatus.NOT_FOUND));
 
-        if(departmentMasterOptional.isEmpty()){
-            log.error("Department does not exists with the given departmentName");
-            throw new DepartmentException("Department does not exists with the given departmentName", HttpStatus.NOT_FOUND);
+        Optional<DepartmentMaster> departmentMasterOptional = departmentRepository.findByDepartmentNameAndIsActive(departmentRequest.getDepartmentName(), "Y");
+        log.info("Query to fetch the list if any existing DepartmentName is matching with given departmentName");
+
+
+        if (departmentMasterOptional.isEmpty() && departmentRequest.getDepartmentId()!=departmentMasterOptional.get().getDepartmentId()) {
+            log.error("Department Already exists with the given departmentName");
+            throw new DepartmentException("Department Already exists with the given departmentName", HttpStatus.NOT_FOUND);
         }
-        DepartmentMaster departmentMaster = departmentMapper.toEntity(departmentRequest);
+        DepartmentMaster mapperDepartmentMaster = departmentMapper.toEntity(departmentRequest);
         log.info("DepartmentRequest is mapped to DepartmentMaster");
 
-        departmentMaster.setDepartmentId(departmentMasterOptional.get().getDepartmentId());
-        departmentRepository.save(departmentMaster);
+        mapperDepartmentMaster.setDepartmentId(departmentMaster.getDepartmentId());
+        departmentRepository.save(mapperDepartmentMaster);
         log.info("DepartmentMaster record is updated");
 
-        return departmentMapper.toResponse(departmentMaster);
+        return departmentMapper.toResponse(mapperDepartmentMaster);
     }
 
     @Override
-    public DepartmentResponse deleteDepartment(int departmentId) {
-        DepartmentMaster departmentMaster= departmentRepository.findById(departmentId)
-                .orElseThrow(()-> new DepartmentException("Department does not exist with the given departmentName",HttpStatus.NOT_FOUND));
-        log.info("Query to fetch the DepartmentMaster based on departmentId");
+    public List<DepartmentResponse> deleteDepartment(List<Integer> departmentIdsList) {
+        return departmentIdsList.stream().map(integer -> {
+            DepartmentMaster departmentMaster = departmentRepository.findByDepartmentIdAndIsActive(integer,"Y")
+                    .orElseThrow(()-> new DepartmentException("Department does not exist with the given departmentName: "+integer,HttpStatus.NOT_FOUND));
+            log.info("Query to fetch the DepartmentMaster based on departmentId");
 
-//        departmentRepository.deleteById(departmentId);
-//        log.info("Deleted Successfully");
+            departmentMaster.setIsActive("N");
+            log.info("DepartmentMaster is setting as InActive");
 
-        departmentMaster.setIsActive("N");
-        log.info("DepartmentMaster is setting as InActive");
-
-         return departmentMapper.toResponse(departmentRepository.save(departmentMaster));
+            return departmentMapper.toResponse(departmentRepository.save(departmentMaster));
+        }).collect(Collectors.toList());
 
     }
 
     @Override
     public DepartmentResponse getDepartment(int departmentId) {
 
-        DepartmentMaster departmentMaster=departmentRepository.findById(departmentId)
-                .orElseThrow(()-> new DepartmentException("Department does not exist with the given departmentId",HttpStatus.NOT_FOUND));
+        DepartmentMaster departmentMaster =departmentRepository.findByDepartmentIdAndIsActive(departmentId, "Y")
+                .orElseThrow(() -> new DepartmentException("Department does not exist with the given departmentId : " + departmentId, HttpStatus.NOT_FOUND));
         log.info("Query to fetch the DepartmentMaster based on departmentId");
 
         return departmentMapper.toResponse(departmentMaster);
@@ -97,9 +99,10 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public List<DepartmentResponse> getAllDepartments() {
-        List<DepartmentMaster> departmentMasterList=  departmentRepository.findAll();
+        List<DepartmentMaster> departmentMasterList= departmentRepository.findAll();
         log.info("Fetching all DepartmentMasterList");
 
         return departmentMasterList.stream().map(departmentMaster -> departmentMapper.toResponse(departmentMaster)).collect(Collectors.toList());
     }
+
 }

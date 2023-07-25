@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface WorkCenterRepository extends JpaRepository<WorkCenterMaster,Integer> {
 
     Optional<WorkCenterMaster> findByWorkCenterNameAndIsActive(String workCenterName,String y);
+
+    Optional<WorkCenterMaster> findByWorkCenterIdAndIsActive(int workCenterId, String y);
 }

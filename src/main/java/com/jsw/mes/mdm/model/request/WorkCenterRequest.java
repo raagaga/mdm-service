@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class WorkCenterRequest {
     private int unitId;
     private int processId;
+    private int workCenterId;
     private String workCenterName;
     private String workCenterDescription;
     private String isActive;

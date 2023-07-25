@@ -81,16 +81,16 @@ public class WorkCenterController {
                 .body(Response.of(workCenterService.updateWorkCenter(workCenterRequest)));
     }
 
-    @DeleteMapping("/{workCenterId}")
+    @DeleteMapping
     @Operation(summary = "Delete Work-Center")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Work-center deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "InvalidWorkCenterId ", content = @Content),
-            })
-    public ResponseEntity<Response<WorkCenterResponse>> deleteWorkCenter(@RequestParam("workCenterId") int workCenterId) {
+            @ApiResponse(responseCode = "404", description = "InvalidWorkCenterId ", content = @Content)
+    })
+    public ResponseEntity<Response<List<WorkCenterResponse>>> deleteWorkCenter(@RequestBody List<Integer> workCenterIdsList) {
         log.info("delete WorkCenter is started.......");
-        return ResponseEntity.ok(
-                Response.of(workCenterService.deleteWorkCenter(workCenterId)));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(Response.of(workCenterService.deleteWorkCenter(workCenterIdsList)));
     }
 }
 
