@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EnableJpaRepositories
-public class 	MdmService {
+public class MdmService {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MdmService.class, args);

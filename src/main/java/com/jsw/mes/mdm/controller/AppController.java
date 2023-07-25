@@ -81,16 +81,16 @@ public class AppController
                 Response.of((appService.getAllApp())));
     }
 
-    @DeleteMapping("/{appId}")
+    @DeleteMapping
     @Operation(summary = "Delete App")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "App deleted successfully."),
-                    @ApiResponse(responseCode = "404",description = "Invalid app id provided.",content = @Content),
+                    @ApiResponse(responseCode = "404",description = "Invalid app id's provided.",content = @Content),
             })
-    public ResponseEntity<Response<String>> deleteApp(@RequestParam("appId") int appId) {
+    public ResponseEntity<Response<List<AppResponse>>> deleteApp(@RequestBody List<Long> appId) {
 
         return ResponseEntity.ok(
-                Response.of((appService.deleteApp(appId))));
+                Response.of((appService.deleteApps(appId))));
     }
 }

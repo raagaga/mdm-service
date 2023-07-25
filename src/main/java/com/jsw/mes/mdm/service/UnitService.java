@@ -13,7 +13,7 @@ public interface UnitService
 
     public UnitResponse getUnitMaster(int unitId);
 
-    public UnitResponse deleteUnitMaster(int UnitId);
+    public List<UnitResponse> deleteUnitIds(List<Integer> unitId);
 
     public  List<UnitResponse> getAllUnitMaster(int plantId, long appId);
 }

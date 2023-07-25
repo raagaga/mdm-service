@@ -1,6 +1,7 @@
 package com.jsw.mes.mdm.service.impl;
 
 import com.jsw.mes.mdm.entity.ScreenMaster;
+import com.jsw.mes.mdm.exception.ScreenException;
 import com.jsw.mes.mdm.mapper.ScreenMapper;
 import com.jsw.mes.mdm.model.request.ScreenRequest;
 import com.jsw.mes.mdm.model.response.ScreenResponse;
@@ -14,17 +15,13 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
-import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.*;
 
 public class ScreenServiceImplTest {
     @Mock
@@ -86,8 +83,10 @@ public class ScreenServiceImplTest {
 
         when(screenRepository.findByScreenNameAndIsActive(anyString(), anyString())).thenReturn(Optional.ofNullable(screenMaster));
 
-        String message=assertThrows(Exception.class,()->screenServiceImpl.addScreen(screenRequest)).getMessage();
-        assertEquals(message,"Screen Already exists with the given ScreenName: screenName");
+        Assert.expectThrows("Screen Already exists with the given ScreenName: screenName",ScreenException.class,()-> {
+                    screenServiceImpl.addScreen(screenRequest);
+                });
+
 
     }
 
@@ -105,7 +104,7 @@ public class ScreenServiceImplTest {
     @Test
     public void givenScreenRequest_whenUpdateScreen_IdNotFound_thenThrowException() {
         when(screenRepository.findById(anyInt())).thenReturn(Optional.ofNullable(null));
-        String message=assertThrows(Exception.class,()->screenServiceImpl.updateScreen(screenRequest)).getMessage();
+        String message=expectThrows(ScreenException.class,()->screenServiceImpl.updateScreen(screenRequest)).getMessage();
         assertEquals(message,"Screen does not exists with the given screenId");
     }
 
@@ -117,7 +116,7 @@ public class ScreenServiceImplTest {
         when(screenRepository.findById(anyInt())).thenReturn(Optional.ofNullable(screenMaster));
         when(screenRepository.findByScreenNameAndIsActive(anyString(), anyString())).thenReturn(Optional.of(master));
 
-        String message=assertThrows(Exception.class,()->screenServiceImpl.updateScreen(screenRequest)).getMessage();
+        String message=expectThrows(Exception.class,()->screenServiceImpl.updateScreen(screenRequest)).getMessage();
         assertEquals(message,"Screen Already exists with the given screenName");
     }
 
@@ -134,7 +133,7 @@ public class ScreenServiceImplTest {
     public void givenListOfScreenIds_whenDeleteScreen_idNotFound_thenThrowException() {
         when(screenRepository.findByScreenIdAndIsActive(anyInt(), anyString())).thenReturn(null);
 
-        String message=assertThrows(Exception.class,()->screenServiceImpl.deleteScreen(List.of(Integer.valueOf(0)))).getMessage();
+        String message=expectThrows(Exception.class,()->screenServiceImpl.deleteScreen(List.of(Integer.valueOf(0)))).getMessage();
         assertEquals(message,"Screen does not exists with the given screenId: 0");
     }
 
@@ -145,12 +144,14 @@ public class ScreenServiceImplTest {
 
         ScreenResponse result = screenServiceImpl.getScreen(0);
         assertEquals(result, screenResponse);
+        verify(screenRepository, times(1)).findByParentIdAndIsActive(0, "Y");
+        verify(screenMapper, times(screenResponseList.size())).toResponse(any(ScreenMaster.class));
     }
 
     @Test
     public void givenScreenId_whenGetScreen_idNotFound_thenThrowException() {
         when(screenRepository.findByScreenIdAndIsActive(anyInt(), anyString())).thenReturn(null);
-        String message=assertThrows(Exception.class,()->screenServiceImpl.getScreen(0)).getMessage();
+        String message=expectThrows(Exception.class,()->screenServiceImpl.getScreen(0)).getMessage();
         assertEquals(message,"Screen does not exists with the given screenId: 0");
 
     }
@@ -180,7 +181,7 @@ public class ScreenServiceImplTest {
 
         when(screenRepository.findByParentIdAndIsActive(anyInt(), anyString())).thenReturn(null);
 
-        String message=assertThrows(Exception.class,()->screenServiceImpl.getAllScreens(0)).getMessage();
+        String message=expectThrows(Exception.class,()->screenServiceImpl.getAllScreens(0)).getMessage();
         assertEquals(message,"Screen records are not found with the given parentId");
 
     }
@@ -205,7 +206,7 @@ public class ScreenServiceImplTest {
     public void givenScreenId_whenGetScreenMasterById_idNotFound_thenThrowException() {
         when(screenRepository.findByScreenIdAndIsActive(anyInt(), anyString())).thenReturn(null);
 
-        String message=assertThrows(Exception.class,()->screenServiceImpl.getScreenMasterById(0)).getMessage();
+        String message=expectThrows(Exception.class,()->screenServiceImpl.getScreenMasterById(0)).getMessage();
         assertEquals(message,"Screen does not exists with the given screenId: 0");
     }
 

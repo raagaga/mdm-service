@@ -137,11 +137,18 @@ public class UnitServiceImpl implements UnitService
     }
 
     @Override
-    public UnitResponse deleteUnitMaster(int unitId) {
-        UnitMaster master = unitRepository.findById(unitId)
-                .orElseThrow(()->new UnitException("Id not found",HttpStatus.NOT_FOUND));
-        master.setIsActive("N");
-        return unitMapper.toResponse(unitRepository.save(master));
+    public List<UnitResponse> deleteUnitIds(List<Integer> unitIdList) {
+        return unitIdList.stream().map(
+                data ->{
+                    UnitMaster unitMaster = getById(data);
+                    unitMaster.setIsActive("N");
+                    return unitMapper.toResponse(unitRepository.save(unitMaster));
+                }).collect(Collectors.toList());
+    }
+
+    public UnitMaster getById(int unitId){
+        return unitRepository.findByUnitIdAndIsActive(unitId,"Y").
+                orElseThrow(()-> new UnitException("Unit Id's not found",HttpStatus.NOT_FOUND));
     }
 
     @Override

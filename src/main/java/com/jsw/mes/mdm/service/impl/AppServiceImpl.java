@@ -82,15 +82,17 @@ public class AppServiceImpl implements AppService
     }
 
     @Override
-    public String deleteApp(long appId) {
-        AppMaster appMaster = appRepository.findByAppId(appId);
-        if(appMaster == null){
-            log.error("App Id Not correct");
-            throw new AppException("Invalid AppId provided",HttpStatus.NOT_FOUND);
-        }else if(appMaster.getAppId()==appId){
-            appRepository.delete(appMaster);
-            log.info("App id is deleted");
-        }
-        return appId + " is deleted";
+    public List<AppResponse> deleteApps(List<Long> appIdList) {
+        return appIdList.stream().map(
+                data ->{
+                    AppMaster appMaster = getById(data);
+                    appMaster.setIsActive("N");
+                    return appMapper.toResponse(appRepository.save(appMaster));
+                }).collect(Collectors.toList());
+    }
+
+    public AppMaster getById(long appId){
+        return appRepository.findByAppIdAndIsActive(appId,"Y").
+                orElseThrow(()-> new AppException("App Id's not found",HttpStatus.NOT_FOUND));
     }
 }

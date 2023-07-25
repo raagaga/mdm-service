@@ -11,5 +11,5 @@ public interface AppService
     public AppResponse updateApp(AppRequest appRequest);
     public AppResponse getApp(long appId);
     public List<AppResponse> getAllApp();
-    public String deleteApp(long appId);
+    public List<AppResponse> deleteApps(List<Long> appId);
 }

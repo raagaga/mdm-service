@@ -62,17 +62,17 @@ public class UnitController
                 .body(Response.of((unitService.updateUnitMaster(unitRequest))));
     }
 
-    @DeleteMapping("/{unitId}")
+    @DeleteMapping
     @Operation(summary = "Delete Unit")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Unit deleted successfully."),
-                    @ApiResponse(responseCode = "404",description = "Invalid unit id provided.",content = @Content),
+                    @ApiResponse(responseCode = "404",description = "Invalid unit id's provided.",content = @Content),
             })
-    public ResponseEntity<Response<UnitResponse>> deleteUnit(@RequestParam("unitId") int unitId) {
+    public ResponseEntity<Response<List<UnitResponse>>> deleteUnit(@RequestBody List<Integer> unitId) {
 
         return ResponseEntity.ok(
-                Response.of((unitService.deleteUnitMaster(unitId))));
+                Response.of((unitService.deleteUnitIds(unitId))));
     }
 
     @GetMapping("/{unitId}")
